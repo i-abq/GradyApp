@@ -1,2 +1,119 @@
-<h1>Bem-vindo ao GradyApp</h1>
-<p>Esta é a página inicial do seu aplicativo.</p> 
+<div class="hero">
+  <h1>Bem-vindo ao GradyApp</h1>
+  <p class="subtitle">A plataforma completa para gerenciar seus projetos e equipes</p>
+  
+  <div class="cta-buttons">
+    <%= link_to "Começar agora", new_user_registration_path, class: "cta-primary" %>
+    <a href="#features" class="cta-secondary">Saiba mais</a>
+  </div>
+</div>
+
+<div id="features" class="features">
+  <h2>Funcionalidades principais</h2>
+  
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h3>Gerenciamento de Projetos</h3>
+      <p>Organize seus projetos com facilidade e acompanhe o progresso em tempo real.</p>
+    </div>
+    
+    <div class="feature-card">
+      <h3>Colaboração em Equipe</h3>
+      <p>Trabalhe de forma colaborativa com sua equipe, compartilhando arquivos e informações.</p>
+    </div>
+    
+    <div class="feature-card">
+      <h3>Análise de Desempenho</h3>
+      <p>Visualize métricas e relatórios detalhados sobre o desempenho dos seus projetos.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 60px 20px;
+    margin-bottom: 40px;
+  }
+  
+  .hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+    color: #172f41;
+  }
+  
+  .subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 40px;
+  }
+  
+  .cta-buttons {
+    margin-top: 30px;
+  }
+  
+  .cta-primary {
+    background-color: #000000;
+    color: #FFFFFF;
+    padding: 12px 24px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 16px;
+  }
+  
+  .cta-primary:hover {
+    background-color: #333333;
+  }
+  
+  .cta-secondary {
+    border: 1px solid #172f41;
+    color: #172f41;
+    padding: 12px 24px;
+    border-radius: 4px;
+    text-decoration: none;
+  }
+  
+  .cta-secondary:hover {
+    background-color: #f5f5f5;
+    color: #3e82b3;
+  }
+  
+  .features {
+    padding: 60px 20px;
+    background-color: #f9f9f9;
+    text-align: center;
+  }
+  
+  .features h2 {
+    margin-bottom: 40px;
+    color: #172f41;
+  }
+  
+  .feature-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-top: 40px;
+  }
+  
+  .feature-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 30px;
+    width: 280px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    text-align: left;
+  }
+  
+  .feature-card h3 {
+    color: #172f41;
+    margin-bottom: 16px;
+  }
+  
+  .feature-card p {
+    color: #666;
+    line-height: 1.6;
+  }
+</style> 
