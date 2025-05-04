@@ -30,10 +30,14 @@
       }
       
       .logo {
-        font-size: 24px;
-        font-weight: bold;
-        color: #172f41;
+        display: flex;
+        align-items: center;
         text-decoration: none;
+      }
+      
+      .logo img {
+        height: 40px;
+        width: auto;
       }
       
       .menu {
@@ -178,7 +182,9 @@
 
   <body>
     <div class="navbar">
-      <a href="/" class="logo">GradyApp</a>
+      <a href="/" class="logo">
+        <%= image_tag "logo.svg", alt: "GradyApp Logo" %>
+      </a>
       <div class="menu-toggle" onclick="toggleMenu()">
         <span></span>
         <span></span>
