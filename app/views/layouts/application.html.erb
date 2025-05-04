@@ -38,6 +38,8 @@
       .logo img {
         height: 40px;
         width: auto;
+        max-width: 180px;
+        object-fit: contain;
       }
       
       .menu {
@@ -183,7 +185,7 @@
   <body>
     <div class="navbar">
       <a href="/" class="logo">
-        <%= image_tag "logo.svg", alt: "GradyApp Logo" %>
+        <%= image_tag "logo-barra-superior.svg", alt: "GradyApp Logo" %>
       </a>
       <div class="menu-toggle" onclick="toggleMenu()">
         <span></span>
