@@ -6,23 +6,28 @@
   </div>
   <h2 style="font-weight: 700; margin-bottom: 8px;">Welcome Back to Grady</h2>
   <p style="color: #666; margin-bottom: 24px;">Enter your username and password to continue.</p>
-  <form>
+
+  <% if flash[:alert] %>
+    <div style="color: #b00; margin-bottom: 16px; font-weight: 600;"> <%= flash[:alert] %> </div>
+  <% end %>
+
+  <%= form_for(:user, url: user_session_path) do |f| %>
     <div style="text-align: left; margin-bottom: 16px;">
-      <label for="email" style="font-weight: 600;">Email</label><br>
-      <input id="email" name="email" type="email" placeholder="Enter your email address" style="width: 100%; padding: 8px; border: 1px solid #bbb; border-radius: 6px; margin-top: 4px;">
+      <label for="user_email" style="font-weight: 600;">Email</label><br>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "Enter your email address", style: "width: 100%; padding: 8px; border: 1px solid #bbb; border-radius: 6px; margin-top: 4px;" %>
     </div>
     <div style="text-align: left; margin-bottom: 8px;">
-      <label for="password" style="font-weight: 600;">Password</label><br>
-      <input id="password" name="password" type="password" placeholder="Enter your password" style="width: 100%; padding: 8px; border: 1px solid #bbb; border-radius: 6px; margin-top: 4px;">
+      <label for="user_password" style="font-weight: 600;">Password</label><br>
+      <%= f.password_field :password, autocomplete: "current-password", placeholder: "Enter your password", style: "width: 100%; padding: 8px; border: 1px solid #bbb; border-radius: 6px; margin-top: 4px;" %>
     </div>
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
       <div>
-        <input id="remember_me" name="remember_me" type="checkbox">
-        <label for="remember_me" style="font-size: 0.95em;">Remember me</label>
+        <%= f.check_box :remember_me %>
+        <label for="user_remember_me" style="font-size: 0.95em;">Remember me</label>
       </div>
-      <a href="#" style="font-size: 0.95em; font-weight: 600; color: #222; text-decoration: none;">Forgot password</a>
+      <%= link_to "Forgot password", new_user_password_path, style: "font-size: 0.95em; font-weight: 600; color: #222; text-decoration: none;" %>
     </div>
-    <button type="submit" style="width: 100%; background: #222; color: #fff; font-weight: 600; padding: 10px 0; border: none; border-radius: 6px; font-size: 1.1em; cursor: pointer;">Sign in</button>
-  </form>
+    <%= f.submit "Sign in", style: "width: 100%; background: #222; color: #fff; font-weight: 600; padding: 10px 0; border: none; border-radius: 6px; font-size: 1.1em; cursor: pointer;" %>
+  <% end %>
 </div>
 <footer style="text-align: left; margin: 32px 0 0 16px; color: #888; font-size: 0.95em;">2025 Grady. All rights reserved.</footer> 
