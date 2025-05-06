@@ -1,7 +1,7 @@
 <div class="hero-new">
   <div class="hero-content">
     <div class="hero-text">
-      <h1>Corrija provas em segundos, ganhe tempo para ensinar.</h1>
+      <h1>Corrija provas em segundos e ganhe tempo.</h1>
       <p class="subtitle-new">Digitalize respostas, detecte erros e gere relatórios detalhados — tudo em minutos, sem planilhas.</p>
       
       <div class="cta-buttons-new">
@@ -13,17 +13,7 @@
     </div>
     
     <div class="hero-illustration">
-      <!-- Placeholder para ilustração/animação do robô Grady -->
-      <div class="illustration-placeholder">
-        <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-          <rect x="50" y="50" width="200" height="200" rx="10" fill="#e6e6e6" />
-          <circle cx="150" cy="120" r="40" fill="#31678d" />
-          <rect x="110" y="170" width="80" height="40" rx="5" fill="#31678d" />
-          <rect x="90" y="210" width="120" height="10" fill="#bbbbbb" />
-          <rect x="70" y="230" width="160" height="3" fill="#bbbbbb" />
-          <rect x="90" y="240" width="120" height="3" fill="#bbbbbb" />
-        </svg>
-      </div>
+      <%= image_tag "hero-illustration.png", alt: "Ilustração do robô Grady corrigindo provas", class: "hero-img" %>
     </div>
   </div>
   
@@ -108,10 +98,10 @@
     align-items: center;
   }
   
-  .illustration-placeholder {
-    width: 100%;
-    max-width: 400px;
+  .hero-img {
+    max-width: 100%;
     height: auto;
+    max-height: 400px; /* Ajuste a altura máxima conforme necessário */
   }
   
   .cta-buttons-new {
@@ -190,12 +180,12 @@
     }
     
     .hero-content {
-      flex-direction: column;
+      flex-direction: column-reverse; /* Imagem acima do texto */
     }
     
     .hero-text {
       padding-right: 0;
-      margin-bottom: 40px;
+      margin-top: 40px; /* Espaço entre imagem e texto */
       text-align: center;
     }
     
@@ -209,6 +199,10 @@
     
     .cta-buttons-new {
       justify-content: center;
+    }
+    
+    .hero-img {
+      max-height: 300px; /* Ajuste para telas menores */
     }
     
     .logos {
@@ -233,6 +227,10 @@
     .cta-demo, .cta-signup {
       width: 100%;
       padding: 12px 20px;
+    }
+    
+    .hero-img {
+      max-height: 250px; /* Ajuste adicional */
     }
     
     .logo-item {
