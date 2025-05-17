@@ -73,4 +73,10 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Configurações de host e domínio permitidos para desenvolvimento
+  config.hosts << ".grady.com.br"
+  config.hosts << "localhost"
+  config.action_controller.default_url_options = { host: "www.grady.com.br", protocol: "https" }
+  config.action_mailer.default_url_options = { host: "auth.grady.com.br", protocol: "https" }
 end

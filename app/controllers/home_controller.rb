@@ -1,5 +1,5 @@
-class HomeController < ActionController::Base
-  layout "application"
+class HomeController < ApplicationController
+  # A página inicial não requer autenticação
   
   def index
   end
