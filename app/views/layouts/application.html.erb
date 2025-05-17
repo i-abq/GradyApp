@@ -29,10 +29,16 @@
         z-index: 1000;
       }
       
+      .navbar-left {
+        display: flex;
+        align-items: center;
+      }
+      
       .logo {
         display: flex;
         align-items: center;
         text-decoration: none;
+        margin-right: 20px;
       }
       
       .logo img {
@@ -40,14 +46,8 @@
         width: auto;
       }
       
-      .menu {
-        display: flex;
-        align-items: center;
-      }
-      
       .menu-items {
         display: flex;
-        margin-right: 20px;
       }
       
       .menu-items a {
@@ -78,17 +78,6 @@
         color: #3e82b3;
       }
       
-      .signup {
-        background-color: #000000 !important;
-        color: #FFFFFF !important;
-        border: none !important;
-      }
-      
-      .signup:hover {
-        background-color: #333333 !important;
-        color: #FFFFFF !important;
-      }
-      
       .content {
         padding: 20px 30px;
       }
@@ -112,34 +101,23 @@
       
       /* Regras para dispositivos móveis */
       @media (max-width: 768px) {
+        .navbar-left {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        
         .menu-toggle {
           display: flex;
         }
         
-        .menu {
-          position: fixed;
-          top: 60px;
-          right: -300px;
-          width: 250px;
-          height: 100vh;
-          background-color: #ffffff;
-          box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-          flex-direction: column;
-          align-items: flex-start;
-          padding: 20px;
-          transition: right 0.3s ease;
-          z-index: 100;
+        .menu-items, .auth-buttons {
+          display: none;
         }
         
-        .menu.active {
-          right: 0;
-        }
-        
-        .menu-items {
+        .menu-items.active, .auth-buttons.active {
+          display: flex;
           flex-direction: column;
           width: 100%;
-          margin-right: 0;
-          margin-bottom: 20px;
         }
         
         .menu-items a {
@@ -182,47 +160,29 @@
 
   <body>
     <div class="navbar">
-      <div class="left-section">
-        <div class="menu-items">
+      <div class="navbar-left">
+        <a href="/" class="logo">
+          <%= image_tag "logo-barra-superior.svg", alt: "GradyApp Logo" %>
+        </a>
+        <div class="menu-items" id="menu-items">
           <a href="#">Funcionalidades</a>
           <a href="#">Preços</a>
           <a href="#">Ajuda</a>
         </div>
       </div>
       
-      <a href="/" class="logo">
-        <%= image_tag "logo-barra-superior.svg", alt: "GradyApp Logo" %>
-      </a>
-      
-      <div class="right-section">
-        <div class="auth-buttons">
-          <% if user_signed_in? %>
-            <%= button_to "Sair", destroy_user_session_path, method: :delete %>
-          <% else %>
-            <%= link_to "Entrar", new_user_session_path %>
-          <% end %>
-        </div>
-        <div class="menu-toggle" onclick="toggleMenu()">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
+      <div class="auth-buttons" id="auth-buttons">
+        <% if user_signed_in? %>
+          <%= button_to "Sair", destroy_user_session_path, method: :delete %>
+        <% else %>
+          <%= link_to "Entrar", new_user_session_path %>
+        <% end %>
       </div>
       
-      <!-- Menu mobile -->
-      <div class="mobile-menu" id="menu">
-        <div class="menu-items">
-          <a href="#">Funcionalidades</a>
-          <a href="#">Preços</a>
-          <a href="#">Ajuda</a>
-        </div>
-        <div class="auth-buttons">
-          <% if user_signed_in? %>
-            <%= button_to "Sair", destroy_user_session_path, method: :delete %>
-          <% else %>
-            <%= link_to "Entrar", new_user_session_path %>
-          <% end %>
-        </div>
+      <div class="menu-toggle" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
     </div>
     
@@ -234,81 +194,14 @@
     
     <script>
       function toggleMenu() {
-        const menu = document.getElementById('menu');
+        const menuItems = document.getElementById('menu-items');
+        const authButtons = document.getElementById('auth-buttons');
         const overlay = document.getElementById('overlay');
-        menu.classList.toggle('active');
+        
+        menuItems.classList.toggle('active');
+        authButtons.classList.toggle('active');
         overlay.classList.toggle('active');
       }
     </script>
-    
-    <style>
-      /* Estilos adicionais para a nova estrutura */
-      .left-section {
-        display: flex;
-        align-items: center;
-      }
-      
-      .right-section {
-        display: flex;
-        align-items: center;
-      }
-      
-      .mobile-menu {
-        display: none;
-      }
-      
-      @media (max-width: 768px) {
-        .left-section .menu-items {
-          display: none;
-        }
-        
-        .mobile-menu {
-          position: fixed;
-          top: 60px;
-          right: -300px;
-          width: 250px;
-          height: 100vh;
-          background-color: #ffffff;
-          box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-          flex-direction: column;
-          align-items: flex-start;
-          padding: 20px;
-          transition: right 0.3s ease;
-          z-index: 100;
-        }
-        
-        .mobile-menu.active {
-          display: block;
-          right: 0;
-        }
-        
-        .mobile-menu .menu-items {
-          flex-direction: column;
-          width: 100%;
-          margin-right: 0;
-          margin-bottom: 20px;
-        }
-        
-        .mobile-menu .menu-items a {
-          margin: 10px 0;
-          padding: 8px 0;
-          width: 100%;
-          border-bottom: 1px solid #eee;
-        }
-        
-        .mobile-menu .auth-buttons {
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-        }
-        
-        .mobile-menu .auth-buttons a, 
-        .mobile-menu .auth-buttons button {
-          width: 100%;
-          margin: 5px 0;
-          text-align: center;
-        }
-      }
-    </style>
   </body>
 </html>
