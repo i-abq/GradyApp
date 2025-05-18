@@ -1,0 +1,66 @@
+<div class="dashboard-container">
+  <h1>Bem-vindo ao seu Dashboard</h1>
+  
+  <div class="dashboard-content">
+    <div class="dashboard-card">
+      <h2>Seus Projetos</h2>
+      <p>Você ainda não tem projetos. Clique no botão abaixo para criar seu primeiro projeto.</p>
+      <button class="btn-primary">Criar Projeto</button>
+    </div>
+    
+    <div class="dashboard-card">
+      <h2>Atividade Recente</h2>
+      <p>Nenhuma atividade recente para mostrar.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .dashboard-container h1 {
+    color: #172a3a;
+    margin-bottom: 30px;
+    font-size: 2rem;
+  }
+  
+  .dashboard-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .dashboard-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-card h2 {
+    color: #172a3a;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+  }
+  
+  .btn-primary {
+    background-color: #244b67;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    margin-top: 15px;
+  }
+  
+  .btn-primary:hover {
+    background-color: #172a3a;
+  }
+</style> 
