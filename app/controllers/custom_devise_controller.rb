@@ -14,11 +14,11 @@ class CustomDeviseController < ActionController::Base
   end
   
   def after_sign_in_path_for(resource)
-    stored_location_for(resource) || URI.join("https://#{ENV.fetch('APP_HOST', 'app.grady.com.br')}", '/').to_s
+    stored_location_for(resource) || "https://app.grady.com.br"
   end
   
   def after_sign_out_path_for(resource_or_scope)
-    ENV.fetch('MARKETING_URL', 'https://www.grady.com.br')
+    "https://www.grady.com.br"
   end
   
   def json_request?

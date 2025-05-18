@@ -3,10 +3,10 @@
 
 Rails.application.config.session_store :cookie_store, 
   key: '_grady_app_session',
-  domain: ENV.fetch('COOKIE_DOMAIN', 'app.grady.com.br'),
+  domain: 'app.grady.com.br',
   same_site: :lax,
-  secure: Rails.env.production?,
-  httponly: true
+  secure: Rails.env.production?
 
 # Nota: Se no futuro for necessário compartilhar o cookie entre subdomínios,
-# defina a variável de ambiente COOKIE_DOMAIN com o valor '.grady.com.br' 
+# troque o domínio para:
+# domain: '.grady.com.br' 

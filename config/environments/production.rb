@@ -97,8 +97,6 @@ Rails.application.configure do
 
   # Configurações de host e domínio permitidos
   config.hosts << ".grady.com.br"
-  
-  # URLs padrão
-  config.action_controller.default_url_options = { host: ENV.fetch('APP_HOST', 'app.grady.com.br'), protocol: 'https' }
-  config.action_mailer.default_url_options = { host: ENV.fetch('APP_HOST', 'app.grady.com.br'), protocol: 'https' }
+  config.action_controller.default_url_options = { host: "www.grady.com.br", protocol: "https" }
+  config.action_mailer.default_url_options = { host: "auth.grady.com.br", protocol: "https" }
 end
