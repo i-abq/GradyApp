@@ -1,20 +1,25 @@
 Rails.application.routes.draw do
-  # Montagens globais com constraints explícitos
-  concern :storage_endpoints do
-    mount ActiveStorage::Engine => '/rails/active_storage' if defined?(ActiveStorage)
-    mount ActionCable.server => '/cable' if defined?(ActionCable)
+  # Montagens globais com constraints explícitos para cada subdomínio
+  concern :marketing_endpoints do
+    mount ActiveStorage::Engine => '/rails/active_storage', as: :marketing_storage if defined?(ActiveStorage)
+    mount ActionCable.server => '/cable', as: :marketing_cable if defined?(ActionCable)
+  end
+  
+  concern :app_endpoints do
+    mount ActiveStorage::Engine => '/rails/active_storage', as: :app_storage if defined?(ActiveStorage)
+    mount ActionCable.server => '/cable', as: :app_cable if defined?(ActionCable)
   end
   
   # Domínio marketing (grady.com.br e www.grady.com.br)
   constraints host: /^(www\.)?grady\.com\.br$/ do
-    concerns :storage_endpoints
+    concerns :marketing_endpoints
     root to: 'marketing#home', as: :marketing_root
     # Adicionar outras rotas de marketing conforme necessário
   end
   
   # Domínio da aplicação (app.grady.com.br) - incluindo autenticação
   constraints host: 'app.grady.com.br' do
-    concerns :storage_endpoints
+    concerns :app_endpoints
     
     # Rotas de autenticação com Devise e caminhos customizados
     devise_for :users, path: '', path_names: {
