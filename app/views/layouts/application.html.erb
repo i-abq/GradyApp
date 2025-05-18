@@ -6,15 +6,25 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <style>
       body {
         margin: 0;
         padding: 0;
-        font-family: Arial, sans-serif;
+        font-family: 'Inter', sans-serif;
         color: #172f41;
         background-color: #FFFFFF;
+      }
+      
+      h1, h2, h3, h4, h5, h6, button, .btn {
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 700;
       }
       
       .navbar {
@@ -54,6 +64,8 @@
         margin: 0 15px;
         color: #172f41;
         text-decoration: none;
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
       }
       
       .menu-items a:hover {
@@ -71,6 +83,8 @@
         background-color: transparent;
         cursor: pointer;
         font-size: 16px;
+        font-family: 'DM Sans', sans-serif;
+        font-weight: 500;
       }
       
       .auth-buttons a:hover, .auth-buttons button:hover {
