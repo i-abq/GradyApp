@@ -77,6 +77,13 @@ Rails.application.configure do
   # Configurações de host e domínio permitidos para desenvolvimento
   config.hosts << ".grady.com.br"
   config.hosts << "localhost"
-  config.action_controller.default_url_options = { host: "www.grady.com.br", protocol: "https" }
-  config.action_mailer.default_url_options = { host: "auth.grady.com.br", protocol: "https" }
+  # Adicionar hosts de desenvolvimento
+  config.hosts << "app.grady.test"
+  config.hosts << "www.grady.test"
+  config.hosts << ".grady.localhost"
+  config.hosts << ".grady.test"
+  
+  # URLs padrão
+  config.action_controller.default_url_options = { host: ENV.fetch('APP_HOST', 'app.grady.com.br'), protocol: 'https' }
+  config.action_mailer.default_url_options = { host: ENV.fetch('APP_HOST', 'app.grady.com.br'), protocol: 'https' }
 end

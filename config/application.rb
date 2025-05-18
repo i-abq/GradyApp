@@ -23,5 +23,13 @@ module GradyApp
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    
+    # Para helpers de URL usados fora do contexto de request
+    config.after_initialize do
+      Rails.application.routes.default_url_options = { 
+        host: ENV.fetch('APP_HOST', 'app.grady.com.br'), 
+        protocol: 'https' 
+      }
+    end
   end
 end
