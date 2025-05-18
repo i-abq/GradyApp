@@ -1,5 +1,5 @@
-class DeviseController < ActionController::Base
-  include Devise::Controllers::Helpers
+class CustomDeviseController < Devise::DeviseController
+  # Extendendo o controller original do Devise para preservar a funcionalidade
   
   layout 'application'
   
