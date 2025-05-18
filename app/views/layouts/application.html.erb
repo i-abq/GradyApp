@@ -35,8 +35,12 @@
         align-items: center;
         padding: 15px 20px;
         background-color: #FFFFFF;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         z-index: 1000;
+        transition: box-shadow 0.3s ease;
+      }
+      
+      .navbar-shadow {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       }
       
       .navbar-left {
@@ -197,7 +201,7 @@
   </head>
 
   <body>
-    <div class="navbar">
+    <div class="navbar" id="navbar">
       <div class="navbar-left">
         <a href="/" class="logo">
           <%= image_tag "logo-barra-superior.svg", alt: "GradyApp Logo" %>
@@ -242,6 +246,16 @@
         authButtons.classList.toggle('active');
         overlay.classList.toggle('active');
       }
+      
+      // Adicionar sombra na navbar ao rolar
+      window.addEventListener('scroll', function() {
+        const navbar = document.getElementById('navbar');
+        if (window.scrollY > 10) {
+          navbar.classList.add('navbar-shadow');
+        } else {
+          navbar.classList.remove('navbar-shadow');
+        }
+      });
     </script>
   </body>
 </html>
