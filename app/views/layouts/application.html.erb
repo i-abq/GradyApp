@@ -149,6 +149,15 @@
           display: flex;
         }
         
+        .auth-buttons a, .auth-buttons button {
+          margin-left: 0;
+          padding: 8px 12px;
+          font-size: 14px;
+          white-space: nowrap;
+          width: auto;
+          box-sizing: border-box;
+        }
+        
         .menu-items.active {
           display: flex;
           flex-direction: column;
@@ -175,10 +184,25 @@
           box-sizing: border-box;
         }
         
-        .auth-buttons a, .auth-buttons button {
+        .auth-buttons.active a, .auth-buttons.active button {
           margin: 5px 0;
           width: 100%;
           text-align: center;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .navbar {
+          padding: 12px 15px;
+        }
+        
+        .logo img {
+          height: 32px;
+        }
+        
+        .auth-buttons a, .auth-buttons button {
+          padding: 6px 10px;
+          font-size: 14px;
         }
       }
       
