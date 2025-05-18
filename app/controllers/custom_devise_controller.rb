@@ -14,7 +14,7 @@ class CustomDeviseController < ActionController::Base
   end
   
   def after_sign_in_path_for(resource)
-    stored_location_for(resource) || URI.join(ENV.fetch('APP_BASE_URL', 'https://app.grady.com.br'), '/').to_s
+    stored_location_for(resource) || URI.join("https://#{ENV.fetch('APP_HOST', 'app.grady.com.br')}", '/').to_s
   end
   
   def after_sign_out_path_for(resource_or_scope)
