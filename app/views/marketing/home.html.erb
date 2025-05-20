@@ -5,7 +5,7 @@
       <p class="subtitle-new">Digitalize respostas, detecte erros e gere relatórios detalhados — tudo em minutos.</p>
       
       <div class="cta-buttons-new">
-        <a href="#" class="cta-demo">Ver Demonstração</a>
+        <a href="#solucoes" class="cta-demo">Ver Demonstração</a>
         <a href="https://form.typeform.com/to/opuTlS02" class="cta-signup">Solicitar Acesso</a>
       </div>
     </div>
@@ -16,25 +16,40 @@
   </div>
 </div>
 
-<div id="features" class="features">
-  <h2>Funcionalidades principais</h2>
-  
-  <div class="feature-grid">
-    <div class="feature-card">
-      <h3>Gerenciamento de Projetos</h3>
-      <p>Organize seus projetos com facilidade e acompanhe o progresso em tempo real.</p>
+<div id="servicos" class="services-section">
+  <h2>Serviços</h2>
+  <!-- Conteúdo da seção Serviços será adicionado aqui -->
+  <p>Detalhes sobre os serviços oferecidos.</p>
+</div>
+
+<div id="solucoes" class="solutions-section">
+  <h2>Soluções</h2>
+  <!-- Conteúdo da seção Soluções será adicionado aqui -->
+  <p>Informações sobre as soluções personalizadas.</p>
+</div>
+
+<div id="sobre" class="about-section">
+  <div class="about-content-wrapper">
+    <div class="about-text">
+      <h2>Sobre a Grady</h2>
+      <p>A Grady é uma micro startup independente dedicada ao desenvolvimento de soluções inteligentes para correção automatizada de provas e gestão de conteúdos educacionais. Fundada por Ian, administrador com experiência em análise de dados, gestão de processos e desenvolvimento web, a Grady nasceu do desejo de unir tecnologia e eficiência para transformar tarefas operacionais em processos inteligentes e acessíveis.</p>
+      <p>Nosso primeiro produto é uma plataforma SaaS (Software as a Service) projetada para instituições, professores e avaliadores que precisam criar, aplicar e corrigir provas de forma ágil, segura e personalizável. Com uma interface limpa e intuitiva, a Grady automatiza o fluxo de trabalho desde a montagem de cadernos de questões até a leitura e análise de cartões de respostas digitalizados.</p>
+      <p>Acreditamos que simplicidade, precisão e autonomia são os pilares de qualquer boa ferramenta. Por isso, nosso foco está em entregar um sistema robusto que não exige infraestrutura complexa, mas que oferece flexibilidade para personalização, integração com APIs externas e suporte a múltiplos formatos de avaliação.</p>
+      <p>A Grady é fruto de uma jornada pessoal, construída com dedicação técnica e compromisso com a melhoria contínua. Nossa missão é clara: tirar o peso do operacional para que você possa focar no que realmente importa — ensinar, avaliar e evoluir.</p>
     </div>
-    
-    <div class="feature-card">
-      <h3>Colaboração em Equipe</h3>
-      <p>Trabalhe de forma colaborativa com sua equipe, compartilhando arquivos e informações.</p>
-    </div>
-    
-    <div class="feature-card">
-      <h3>Análise de Desempenho</h3>
-      <p>Visualize métricas e relatórios detalhados sobre o desempenho dos seus projetos.</p>
+    <div class="about-image-placeholder">
+      <!-- Imagem será adicionada aqui -->
+      <div style="width: 100%; height: 100%; min-height: 300px; background-color: #f0f0f0; display: flex; justify-content: center; align-items: center; border: 1px dashed #cccccc; border-radius: 8px;">
+        <span style="color: #777777; font-style: italic; font-size: 1rem;">Espaço para Imagem</span>
+      </div>
     </div>
   </div>
+</div>
+
+<div id="contato" class="contact-section">
+  <h2>Contato</h2>
+  <!-- Conteúdo da seção Contato será adicionado aqui -->
+  <p>Entre em contato conosco.</p>
 </div>
 
 <style>
@@ -270,5 +285,75 @@
   .feature-card p {
     color: #555;
     line-height: 1.5;
+  }
+
+  /* Estilos para a seção Sobre */
+  .about-section {
+    padding: 60px 20px;
+    background-color: #ffffff; 
+    text-align: left; 
+    max-width: 1200px; 
+    margin: 40px auto;
+    border-radius: 10px; /* Optional: if you want rounded corners like .features */
+  }
+
+  .about-content-wrapper {
+    display: flex;
+    align-items: flex-start; /* Align items to the top for potentially varying content heights */
+    gap: 40px; /* Space between text and image placeholder */
+  }
+
+  .about-text {
+    flex: 3; /* Text part takes more space */
+  }
+
+  .about-text h2 {
+    font-size: 2.8rem; 
+    color: #172a3a; /* Using consistent heading color from hero section */
+    margin-bottom: 25px; 
+    line-height: 1.2;
+  }
+
+  .about-text p {
+    font-size: 1.1rem; 
+    line-height: 1.7; /* Slightly more line height for readability */
+    color: #333333; /* Dark gray for paragraph text */
+    margin-bottom: 20px;
+  }
+  .about-text p:last-child {
+    margin-bottom: 0; /* Remove margin from the last paragraph in the text block */
+  }
+
+  .about-image-placeholder {
+    flex: 2; /* Image placeholder takes less space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px; /* Minimum height for the placeholder area */
+  }
+  
+  /* Responsive adjustments para a seção Sobre */
+  @media (max-width: 768px) {
+    .about-content-wrapper {
+      flex-direction: column; /* Stack text and image vertically */
+      gap: 30px; /* Adjust gap for stacked layout */
+    }
+
+    .about-text,
+    .about-image-placeholder {
+      flex: none; /* Reset flex property */
+      width: 100%; /* Full width for both elements when stacked */
+    }
+    
+    .about-text h2 {
+      font-size: 2.2rem; /* Adjust title size for mobile */
+    }
+
+    .about-image-placeholder {
+      min-height: 200px; /* Adjust placeholder height for mobile */
+    }
+    .about-image-placeholder > div { /* Ensure inner div also respects min-height */
+        min-height: 200px;
+    }
   }
 </style> 
