@@ -39,17 +39,18 @@
     </div>
     <div class="about-image-placeholder">
       <!-- Imagem será adicionada aqui -->
-      <div style="width: 100%; height: 100%; min-height: 300px; background-color: #f0f0f0; display: flex; justify-content: center; align-items: center; border: 1px dashed #cccccc; border-radius: 8px;">
-        <span style="color: #777777; font-style: italic; font-size: 1rem;">Espaço para Imagem</span>
-      </div>
+      <%= image_tag "illustrations/about-illustration.webp", alt: "About illustration", style: "width: 100%; height: auto; min-height: 300px; border-radius: 8px;" %>
     </div>
   </div>
 </div>
 
 <div id="contato" class="contact-section">
   <h2>Contato</h2>
-  <!-- Conteúdo da seção Contato será adicionado aqui -->
-  <p>Entre em contato conosco.</p>
+  <p>Para mais informações, dúvidas ou para solicitar um orçamento, entre em contato conosco através dos canais abaixo:</p>
+  <div class="contact-details">
+    <p><strong>E-mail:</strong> <a href="mailto:contato@grady.com.br">contato@grady.com.br</a></p>
+    <p><strong>WhatsApp:</strong> <a href="https://wa.me/5538988887777" target="_blank">+55 38 98888-7777</a></p>
+  </div>
 </div>
 
 <style>
@@ -354,6 +355,65 @@
     }
     .about-image-placeholder > div { /* Ensure inner div also respects min-height */
         min-height: 200px;
+    }
+  }
+
+  /* Estilos para a seção Contato */
+  .contact-section {
+    padding: 60px 20px;
+    background-color: #f9f9f9; /* Slightly different background for separation */
+    text-align: center; /* Center align the content */
+    max-width: 1200px;
+    margin: 40px auto;
+    border-radius: 10px;
+  }
+
+  .contact-section h2 {
+    font-size: 2.8rem;
+    color: #172a3a;
+    margin-bottom: 25px;
+    line-height: 1.2;
+  }
+
+  .contact-section p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #333333;
+    margin-bottom: 20px;
+    max-width: 800px; /* Limit width of introductory text */
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .contact-details {
+    margin-top: 30px;
+  }
+
+  .contact-details p {
+    font-size: 1.2rem; /* Larger font for contact info */
+    margin-bottom: 15px;
+  }
+
+  .contact-details a {
+    color: #244b67; /* Theme color for links */
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .contact-details a:hover {
+    text-decoration: underline;
+  }
+
+  /* Responsive adjustments para a seção Contato */
+  @media (max-width: 768px) {
+    .contact-section h2 {
+      font-size: 2.2rem;
+    }
+    .contact-section p {
+      font-size: 1rem;
+    }
+    .contact-details p {
+      font-size: 1.1rem;
     }
   }
 </style> 
