@@ -15,6 +15,8 @@ Rails.application.routes.draw do
       confirmation: 'confirm',
       unlock: 'unlock',
       sign_out: 'logout'
+    }, controllers: {
+      sessions: 'users/sessions'
     }
     
     # Namespace para o painel da aplicação
