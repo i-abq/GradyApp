@@ -1,67 +1,122 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <title>The page you were looking for doesn't exist (404)</title>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Página Não Encontrada</title>
   <style>
-  .rails-default-error-page {
-    background-color: #EFEFEF;
-    color: #2E2F30;
-    text-align: center;
-    font-family: arial, sans-serif;
-    margin: 0;
-  }
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Inter:wght@300;400;500&display=swap');
 
-  .rails-default-error-page div.dialog {
-    width: 95%;
-    max-width: 33em;
-    margin: 4em auto 0;
-  }
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: 'Inter', sans-serif;
+      color: #172f41; /* Cor principal do texto do corpo */
+      background-color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 90vh;
+      text-align: center;
+    }
 
-  .rails-default-error-page div.dialog > div {
-    border: 1px solid #CCC;
-    border-right-color: #999;
-    border-left-color: #999;
-    border-bottom-color: #BBB;
-    border-top: #B00100 solid 4px;
-    border-top-left-radius: 9px;
-    border-top-right-radius: 9px;
-    background-color: white;
-    padding: 7px 12% 0;
-    box-shadow: 0 3px 8px rgba(50, 50, 50, 0.17);
-  }
+    .container {
+      max-width: 600px;
+    }
 
-  .rails-default-error-page h1 {
-    font-size: 100%;
-    color: #730E15;
-    line-height: 1.5em;
-  }
+    .error-code {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #A0AEC0; /* Cinza claro, similar ao da imagem */
+      background-color: #F7FAFC; /* Fundo muito claro para o código */
+      padding: 6px 12px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 25px;
+    }
 
-  .rails-default-error-page div.dialog > p {
-    margin: 0 0 1em;
-    padding: 1em;
-    background-color: #F7F7F7;
-    border: 1px solid #CCC;
-    border-right-color: #999;
-    border-left-color: #999;
-    border-bottom-color: #999;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    border-top-color: #DADADA;
-    color: #666;
-    box-shadow: 0 3px 8px rgba(50, 50, 50, 0.17);
-  }
+    h1 {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 2.8rem; /* Ajustado para ser impactante */
+      font-weight: 700;
+      color: #172a3a; /* Cor escura do tema para títulos */
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    p {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 30px;
+      color: #4A5568; /* Cinza um pouco mais escuro para melhor contraste */
+    }
+
+    .actions a {
+      font-family: 'DM Sans', sans-serif;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin: 0 10px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background-color: #6A4CFF; /* Roxo/Azul da imagem de exemplo */
+      color: #FFFFFF;
+      border: 2px solid #6A4CFF;
+    }
+
+    .btn-primary:hover {
+      background-color: #5538EE; /* Tom mais escuro para hover */
+      border-color: #5538EE;
+    }
+    
+    .btn-secondary {
+      color: #6A4CFF;
+      background-color: transparent;
+      /* border: 2px solid #E2E8F0; Cinza claro para borda, opcional */
+    }
+
+    .btn-secondary:hover {
+      background-color: #F7FAFC; /* Fundo muito sutil para hover */
+      color: #5538EE;
+    }
+    
+    /* Ajustes para telas menores */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+      p {
+        font-size: 0.95rem;
+      }
+      .actions a {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        display: block; /* Botões em tela cheia no mobile */
+        margin-bottom: 15px;
+      }
+      .actions a:last-child {
+        margin-bottom: 0;
+      }
+    }
+
   </style>
 </head>
-
-<body class="rails-default-error-page">
-  <!-- This file lives in public/404.html -->
-  <div class="dialog">
-    <div>
-      <h1>The page you were looking for doesn't exist.</h1>
-      <p>You may have mistyped the address or the page may have moved.</p>
+<body>
+  <div class="container">
+    <span class="error-code">404</span>
+    <h1>Oops! Parece que essa página não existe.</h1>
+    <p>Não conseguimos encontrar a página que você está procurando. Ela pode ter sido movida ou não existe mais.</p>
+    <div class="actions">
+      <a href="https://grady.com.br" class="btn-primary">Voltar para a página inicial</a>
+      <a href="mailto:support@grady.com.br" class="btn-secondary">Contate o Suporte</a>
     </div>
-    <p>If you are the application owner check the logs for more information.</p>
   </div>
 </body>
 </html>
