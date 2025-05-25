@@ -364,6 +364,16 @@
       .footer-copyright p {
         margin: 0;
       }
+
+      /* Added for hiding text on mobile */
+      @media (max-width: 768px) {
+        .optional-copyright-text {
+          display: none;
+        }
+        .optional-link-text {
+          display: none;
+        }
+      }
     </style>
   </head>
 
@@ -413,11 +423,11 @@
         </div>
         <div class="footer-content-right">
           <div class="footer-links">
-            <a href="#">Termos & Condições</a>
-            <a href="#">Política de Privacidade</a>
+            <a href="#">Termos<span class="optional-link-text"> & Condições</span></a>
+            <a href="#"><span class="optional-link-text">Política de </span>Privacidade</a>
           </div>
           <div class="footer-copyright">
-            <p>&copy; 2025 Grady. Todos os direitos reservados.</p>
+            <p>&copy; 2025 Grady. <span class="optional-copyright-text">Todos os direitos reservados.</span></p>
           </div>
         </div>
       </div>
