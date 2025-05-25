@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  root "marketing#home" # Adicionada rota raiz para localhost
+  constraints host: /localhost/ do
+    root "marketing#home" # Adicionada rota raiz para localhost
+  end
 
   # Domínio marketing (grady.com.br e www.grady.com.br)
   constraints host: /^(www\.)?grady\.com\.br$/ do
