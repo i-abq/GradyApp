@@ -17,17 +17,18 @@
   </head>
 
   <body class="<%= 'app-body' if user_signed_in? %>" data-controller="sidebar">
+    <%= render "layouts/topbar" %>
+
     <% if user_signed_in? %>
       <div class="page-overlay" id="page-overlay"></div>
-      <%= render "layouts/sidebar" %>
-      <div class="main-content">
-        <%= render "layouts/topbar" %>
-        <%= yield %>
+      <div class="main-body">
+        <%= render "layouts/sidebar" %>
+        <main class="main-content">
+          <%= yield %>
+        </main>
       </div>
     <% else %>
-      <div class="content">
-        <%= yield %>
-      </div>
+      <%= yield %>
     <% end %>
   </body>
 </html>
