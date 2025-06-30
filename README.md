@@ -1,24 +1,75 @@
-# README
+# GradyApp
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Este é um aplicativo Rails.
 
-Things you may want to cover:
+## Configuração
 
-* Ruby version
+Este projeto usa Ruby `3.3.0`.
 
-* System dependencies
+### Dependências do Sistema
 
-* Configuration
+*   PostgreSQL
+*   Ruby 3.3.0
 
-* Database creation
+### Primeiros Passos
 
-* Database initialization
+Para começar, clone o repositório e instale as dependências:
 
-* How to run the test suite
+```bash
+git clone https://github.com/i-abq/GradyApp
+cd GradyApp
+bundle install
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+### Banco de Dados
 
-* Deployment instructions
+Certifique-se de que o PostgreSQL esteja em execução. Em seguida, configure o banco de dados:
 
-* ...
+```bash
+rails db:create
+rails db:migrate
+rails db:seed # Se houver seeds
+```
+
+## Como executar a aplicação
+
+Você pode iniciar o servidor Rails com:
+
+```bash
+rails server
+```
+
+A aplicação estará disponível em `http://localhost:3000`.
+
+## Como executar os testes
+
+Para executar a suíte de testes, use:
+
+```bash
+rails test
+```
+
+## Serviços
+
+*   **Servidor Web:** Puma
+*   **Banco de Dados:** PostgreSQL
+
+## Deploy com Docker
+
+Este projeto inclui um `Dockerfile` para facilitar o deploy.
+
+1.  **Construa a imagem Docker:**
+
+    ```bash
+    docker build -t gradyapp .
+    ```
+
+2.  **Execute o container:**
+
+    ```bash
+    docker run -p 3000:3000 -d gradyapp
+    ```
+
+    O `ENTRYPOINT` do Docker cuidará da preparação do banco de dados.
+
+...
