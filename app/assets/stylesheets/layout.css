@@ -187,7 +187,7 @@ h1, h2, h3, h4, h5, h6, button, .btn {
 
 .sidebar-menu li a:hover,
 .sidebar-menu li a.active {
-  background-color: #ffffff;
+  background-color: #f5f5f5;
   color: #172f41;
 }
 
@@ -204,7 +204,7 @@ h1, h2, h3, h4, h5, h6, button, .btn {
 .main-content {
   flex-grow: 1;
   padding: 20px 30px;
-  background-color: #f4f7fa;
+  background-color: #ffffff;
   overflow-y: auto; /* This is now the main scrolling container */
 }
 /* --- End Sidebar Styles --- */ 
