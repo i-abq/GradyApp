@@ -222,6 +222,55 @@
       .overlay.active {
         display: block;
       }
+
+      /* --- Sidebar Styles --- */
+      .main-body {
+        display: flex;
+        /* Full height minus navbar's approximate height */
+        height: calc(100vh - 71px); 
+      }
+      
+      .sidebar {
+        width: 240px;
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-right: 1px solid #dee2e6;
+        height: 100%;
+        overflow-y: auto;
+      }
+      
+      .sidebar-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      
+      .sidebar-menu li a {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px;
+        color: #343a40;
+        text-decoration: none;
+        border-radius: 6px;
+        margin-bottom: 5px;
+        font-weight: 500;
+        transition: background-color 0.2s, color 0.2s;
+      }
+      
+      .sidebar-menu li a:hover,
+      .sidebar-menu li a.active {
+        background-color: #e9ecef;
+        color: #172f41;
+      }
+      
+      .main-content {
+        flex-grow: 1;
+        padding: 20px 30px;
+        overflow-y: auto;
+        height: 100%;
+        background-color: #f4f7fa;
+      }
+      /* --- End Sidebar Styles --- */
     </style>
   </head>
 
@@ -261,9 +310,26 @@
     
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
     
-    <div class="content">
-      <%= yield %>
-    </div>
+    <% if user_signed_in? %>
+      <div class="main-body">
+        <aside class="sidebar">
+          <ul class="sidebar-menu">
+            <li><a href="#" class="active">Dashboard</a></li>
+            <li><a href="#">Projetos</a></li>
+            <li><a href="#">Minhas Provas</a></li>
+            <li><a href="#">Configurações</a></li>
+          </ul>
+        </aside>
+        
+        <main class="main-content">
+          <%= yield %>
+        </main>
+      </div>
+    <% else %>
+      <div class="content">
+        <%= yield %>
+      </div>
+    <% end %>
     
     <script>
       function toggleMenu() {
