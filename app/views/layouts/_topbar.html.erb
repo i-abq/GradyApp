@@ -3,19 +3,15 @@
     <a href="/" class="logo">
       <%= image_tag "logos/logo-barra-superior.svg", alt: "GradyApp Logo" %>
     </a>
-    <% unless request.path == "/login" %>
-    <div class="menu-items" id="menu-items">
-      <a href="#">Funcionalidades</a>
-      <a href="#">Preços</a>
-      <a href="#">Ajuda</a>
-    </div>
-    <% end %>
   </div>
   
   <% unless request.path == "/login" %>
   <div class="navbar-right">
     <div class="auth-buttons" id="auth-buttons">
       <% if user_signed_in? %>
+        <%= link_to "https://app.grady.com.br/profile", class: "btn-icon" do %>
+          <%= image_tag 'icons/user-icon.svg', alt: 'Minha Conta' %>
+        <% end %>
         <%= button_to "Sair", destroy_user_session_path, method: :delete %>
       <% else %>
         <%= link_to "Entrar", new_user_session_path %>

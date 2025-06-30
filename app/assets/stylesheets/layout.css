@@ -91,6 +91,26 @@ h1, h2, h3, h4, h5, h6, button, .btn {
   color: #5f6061;
 }
 
+.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  margin-left: 10px;
+  border-radius: 50%;
+  background-color: transparent;
+  transition: background-color 0.2s;
+}
+
+.btn-icon:hover {
+  background-color: #f0f0f0;
+}
+
+.btn-icon img {
+  height: 24px;
+  width: 24px;
+}
+
 .content {
   padding: 20px 30px;
 }
