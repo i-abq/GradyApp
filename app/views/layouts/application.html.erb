@@ -16,16 +16,13 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="<%= 'app-body' if user_signed_in? %>">
-    <%= render 'layouts/topbar' %>
-    
+  <body class="<%= 'app-body' if user_signed_in? %>" data-controller="sidebar">
     <% if user_signed_in? %>
-      <div class="main-body">
-        <%= render 'layouts/sidebar' %>
-        
-        <main class="main-content">
-          <%= yield %>
-        </main>
+      <div class="page-overlay" id="page-overlay"></div>
+      <%= render "layouts/sidebar" %>
+      <div class="main-content">
+        <%= render "layouts/topbar" %>
+        <%= yield %>
       </div>
     <% else %>
       <div class="content">

@@ -1,4 +1,12 @@
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="/" class="logo">
+      <%= image_tag "logos/logo-topbar.svg", alt: "GradyApp Logo" %>
+    </a>
+    <button class="btn-icon" id="sidebar-close-btn">
+      <%= image_tag 'icons/circle-x-icon.svg', alt: 'Fechar' %>
+    </button>
+  </div>
   <ul class="sidebar-menu">
     <li>
       <a href="<%= app_root_path %>" class="active">
