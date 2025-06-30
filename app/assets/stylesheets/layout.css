@@ -189,6 +189,16 @@ h1, h2, h3, h4, h5, h6, button, .btn {
   color: #172f41;
 }
 
+.sidebar-menu li a img {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.sidebar-menu li a span {
+  margin-left: 12px;
+}
+
 .main-content {
   flex-grow: 1;
   padding: 20px 30px;
