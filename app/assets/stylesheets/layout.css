@@ -96,7 +96,8 @@ h1, h2, h3, h4, h5, h6, button, .btn {
   color: #5f6061;
 }
 
-.btn-icon {
+/* Make selector more specific to override default button styles */
+.auth-buttons .btn-icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -105,11 +106,12 @@ h1, h2, h3, h4, h5, h6, button, .btn {
   border-radius: 50%;
   background-color: transparent;
   transition: background-color 0.2s;
-  border: none;
-  outline: none;
+  border: none; /* Remove border */
+  outline: none; /* Remove outline */
 }
 
-.btn-icon:hover {
+/* Make selector more specific */
+.auth-buttons .btn-icon:hover {
   background-color: #f0f0f0;
 }
 
