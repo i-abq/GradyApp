@@ -149,7 +149,7 @@ h1, h2, h3, h4, h5, h6, button, .btn {
 /* Regras para dispositivos móveis */
 @media (max-width: 768px) {
   .sidebar {
-    display: none; /* Hide sidebar by default on mobile */
+    /* display: none; /* Hide sidebar by default on mobile */
     position: fixed; /* Keep it in the viewport when toggled */
     left: -260px; /* Start off-screen */
     top: 0;
@@ -160,7 +160,7 @@ h1, h2, h3, h4, h5, h6, button, .btn {
   }
 
   .sidebar.active {
-    display: block;
+    /* display: block; */
     left: 0; /* Slide in */
   }
 
