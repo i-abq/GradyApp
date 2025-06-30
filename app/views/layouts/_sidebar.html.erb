@@ -1,9 +1,9 @@
-<aside class="sidebar" id="sidebar">
+<aside class="sidebar" id="sidebar" data-sidebar-target="sidebar">
   <div class="sidebar-header">
     <a href="/" class="logo">
       <%= image_tag "logos/logo-topbar.svg", alt: "GradyApp Logo" %>
     </a>
-    <button class="btn-icon" id="sidebar-close-btn">
+    <button class="btn-icon" id="sidebar-close-btn" data-action="click->sidebar#close">
       <%= image_tag 'icons/circle-x-icon.svg', alt: 'Fechar' %>
     </button>
   </div>

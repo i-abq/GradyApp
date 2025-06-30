@@ -20,7 +20,7 @@
     <%= render "layouts/topbar" %>
 
     <% if user_signed_in? %>
-      <div class="page-overlay" id="page-overlay"></div>
+      <div class="page-overlay" id="page-overlay" data-sidebar-target="overlay" data-action="click->sidebar#close"></div>
       <div class="main-body">
         <%= render "layouts/sidebar" %>
         <main class="main-content">
