@@ -32,25 +32,5 @@
         <%= yield %>
       </div>
     <% end %>
-    
-    <script>
-      // Adicionar sombra na navbar ao rolar
-      (function() {
-        const navbar = document.getElementById('navbar');
-        // If logged in, scroll is on .main-content, otherwise it's on window/body
-        const scrollContainer = document.querySelector('.main-content') || window;
-
-        scrollContainer.addEventListener('scroll', function() {
-          // For window, scrollTop is on documentElement, for div it's on the element itself
-          const scrollTop = this.scrollTop || document.documentElement.scrollTop;
-          
-          if (scrollTop > 10) {
-            navbar.classList.add('navbar-shadow');
-          } else {
-            navbar.classList.remove('navbar-shadow');
-          }
-        });
-      })();
-    </script>
   </body>
 </html>
