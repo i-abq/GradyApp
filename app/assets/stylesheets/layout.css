@@ -209,6 +209,7 @@ h1, h2, h3, h4, h5, h6, button, .btn {
 /* --- Sidebar Styles --- */
 .main-body {
   display: flex;
+  align-items: flex-start;
 }
 
 .sidebar {
