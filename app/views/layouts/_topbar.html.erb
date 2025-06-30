@@ -1,0 +1,34 @@
+<div class="navbar" id="navbar">
+  <div class="navbar-left">
+    <a href="/" class="logo">
+      <%= image_tag "logos/logo-barra-superior.svg", alt: "GradyApp Logo" %>
+    </a>
+    <% unless request.path == "/login" %>
+    <div class="menu-items" id="menu-items">
+      <a href="#">Funcionalidades</a>
+      <a href="#">Preços</a>
+      <a href="#">Ajuda</a>
+    </div>
+    <% end %>
+  </div>
+  
+  <% unless request.path == "/login" %>
+  <div class="navbar-right">
+    <div class="auth-buttons" id="auth-buttons">
+      <% if user_signed_in? %>
+        <%= button_to "Sair", destroy_user_session_path, method: :delete %>
+      <% else %>
+        <%= link_to "Entrar", new_user_session_path %>
+      <% end %>
+    </div>
+    
+    <div class="menu-toggle" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <% end %>
+</div>
+
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div> 

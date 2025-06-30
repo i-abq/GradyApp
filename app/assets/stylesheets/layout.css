@@ -1,0 +1,255 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  color: #172f41;
+  background-color: #FFFFFF;
+}
+
+h1, h2, h3, h4, h5, h6, button, .btn {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #FFFFFF;
+  z-index: 1000;
+  transition: box-shadow 0.3s ease;
+}
+
+.navbar-shadow {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  margin-right: 20px;
+}
+
+.logo img {
+  height: 40px;
+  width: auto;
+}
+
+.menu-items {
+  display: flex;
+}
+
+.menu-items a {
+  margin: 0 15px;
+  color: #2e2e2f;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+}
+
+.menu-items a:hover {
+  color: #aaacae;
+}
+
+.auth-buttons a, .auth-buttons button {
+  display: inline-block;
+  padding: 8px 16px;
+  margin-left: 10px;
+  color: #172a3a;
+  text-decoration: none;
+  border-radius: 4px;
+  border: 2px solid #172a3a;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 800;
+}
+
+.auth-buttons a:hover, .auth-buttons button:hover {
+  background-color: #f5f5f5;
+  color: #5f6061;
+}
+
+.content {
+  padding: 20px 30px;
+}
+
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 21px;
+  cursor: pointer;
+  margin-left: 15px;
+}
+
+.menu-toggle span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background-color: #172f41;
+  border-radius: 3px;
+}
+
+/* Regras para dispositivos móveis */
+@media (max-width: 768px) {
+  .navbar-left {
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .menu-toggle {
+    display: flex;
+  }
+  
+  .menu-items {
+    display: none;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+  }
+  
+  .auth-buttons {
+    display: flex;
+  }
+  
+  .auth-buttons a, .auth-buttons button {
+    margin-left: 0;
+    padding: 8px 12px;
+    font-size: 14px;
+    white-space: nowrap;
+    width: auto;
+    box-sizing: border-box;
+  }
+  
+  .menu-items.active {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+  }
+  
+  .menu-items a {
+    margin: 0;
+    padding: 15px 20px;
+    width: 100%;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .auth-buttons.active {
+    position: absolute;
+    top: calc(70px + 3 * 51px); /* Altura do menu + altura dos 3 itens */
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px 20px;
+    box-sizing: border-box;
+  }
+  
+  .auth-buttons.active a, .auth-buttons.active button {
+    margin: 5px 0;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 12px 15px;
+  }
+  
+  .logo img {
+    height: 32px;
+  }
+  
+  .auth-buttons a, .auth-buttons button {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+}
+
+/* Overlay para quando o menu mobile está aberto */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 90;
+}
+
+.overlay.active {
+  display: block;
+}
+
+/* --- Sidebar Styles --- */
+.main-body {
+  display: flex;
+}
+
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-right: 1px solid #dee2e6;
+  position: sticky;
+  top: 70px; /* Should match the navbar's height */
+  height: calc(100vh - 70px); /* Full viewport height minus navbar */
+  overflow-y: auto;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu li a {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  color: #343a40;
+  text-decoration: none;
+  border-radius: 6px;
+  margin-bottom: 5px;
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.sidebar-menu li a:hover,
+.sidebar-menu li a.active {
+  background-color: #e9ecef;
+  color: #172f41;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px 30px;
+  background-color: #f4f7fa;
+}
+/* --- End Sidebar Styles --- */ 
