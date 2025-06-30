@@ -16,12 +16,14 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="<%= 'app-body' if user_signed_in? %>">
+  <body class="<%= 'app-body' if user_signed_in? %>" data-controller="sidebar">
     <%= render 'layouts/topbar' %>
     
     <% if user_signed_in? %>
       <div class="main-body">
-        <%= render 'layouts/sidebar' %>
+        <%= render partial: 'layouts/sidebar', locals: { sidebar_target: 'panel' } %>
+        
+        <div class="sidebar-overlay" data-sidebar-target="overlay" data-action="click->sidebar#toggle"></div>
         
         <main class="main-content">
           <%= yield %>
