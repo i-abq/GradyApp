@@ -226,16 +226,17 @@
       /* --- Sidebar Styles --- */
       .main-body {
         display: flex;
-        /* Full height minus navbar's approximate height */
-        height: calc(100vh - 71px); 
       }
       
       .sidebar {
         width: 240px;
+        flex-shrink: 0;
         background-color: #f8f9fa;
         padding: 20px;
         border-right: 1px solid #dee2e6;
-        height: 100%;
+        position: sticky;
+        top: 70px; /* Should match the navbar's height */
+        height: calc(100vh - 70px); /* Full viewport height minus navbar */
         overflow-y: auto;
       }
       
@@ -266,8 +267,6 @@
       .main-content {
         flex-grow: 1;
         padding: 20px 30px;
-        overflow-y: auto;
-        height: 100%;
         background-color: #f4f7fa;
       }
       /* --- End Sidebar Styles --- */
