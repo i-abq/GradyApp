@@ -16,7 +16,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <body class="<%= 'app-body' if user_signed_in? %>">
     <%= render 'layouts/topbar' %>
     
     <% if user_signed_in? %>
@@ -34,16 +34,6 @@
     <% end %>
     
     <script>
-      function toggleMenu() {
-        const menuItems = document.getElementById('menu-items');
-        const authButtons = document.getElementById('auth-buttons');
-        const overlay = document.getElementById('overlay');
-        
-        menuItems.classList.toggle('active');
-        authButtons.classList.toggle('active');
-        overlay.classList.toggle('active');
-      }
-      
       // Adicionar sombra na navbar ao rolar
       (function() {
         const navbar = document.getElementById('navbar');
