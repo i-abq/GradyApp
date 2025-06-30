@@ -1,7 +1,8 @@
 <div class="navbar" id="navbar">
   <div class="navbar-left">
-    <button class="btn-icon" id="menu-toggle-btn" data-action="click->sidebar#open">
-      <%= image_tag 'icons/menu-icon.svg', alt: 'Menu' %>
+    <button class="btn-icon" id="menu-toggle-btn" data-action="click->sidebar#toggle">
+      <%= image_tag 'icons/menu-icon.svg', alt: 'Menu', data: { sidebar_target: "menuIcon" } %>
+      <%= image_tag 'icons/circle-x-icon.svg', alt: 'Fechar', data: { sidebar_target: "closeIcon" } %>
     </button>
     <a href="/" class="logo">
       <%= image_tag "logos/logo-topbar.svg", alt: "GradyApp Logo" %>

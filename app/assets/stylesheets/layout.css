@@ -236,6 +236,10 @@ h1, h2, h3, h4, h5, h6, button, .btn {
   visibility: visible;
 }
 
+.hidden {
+  display: none !important;
+}
+
 @media (max-width: 768px) {
   #menu-toggle-btn {
     display: flex; /* Show on mobile */
@@ -259,17 +263,9 @@ h1, h2, h3, h4, h5, h6, button, .btn {
   }
 
   .sidebar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    border-bottom: 1px solid #e9ecef;
+    display: none;
   }
 
-  .sidebar-header .logo img {
-    height: 35px;
-  }
-  
   .sidebar-menu {
     padding: 20px;
   }
