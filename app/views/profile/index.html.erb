@@ -1,6 +1,12 @@
 <div class="profile-container">
   <h1>Minha Conta</h1>
   
+  <div class="profile-buttons">
+    <%= link_to "Meu Perfil", "https://app.grady.com.br/profile", class: "btn-primary" %>
+    <%= link_to "Usuários", "https://app.grady.com.br/admin/users", class: "btn-primary" %>
+    <%= link_to "Configurações Avançadas", "https://app.grady.com.br/admin/settings", class: "btn-primary" %>
+  </div>
+  
   <div class="profile-content">
     <div class="profile-card">
       <h2>Dados do Usuário</h2>
@@ -45,5 +51,31 @@
     color: #172a3a;
     font-size: 1.4rem;
     margin-bottom: 15px;
+  }
+  
+  .profile-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+  
+  .btn-primary {
+    background-color: #244b67;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.2s ease;
+  }
+  
+  .btn-primary:hover {
+    background-color: #172a3a;
+    text-decoration: none;
   }
 </style> 
