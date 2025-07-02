@@ -30,6 +30,9 @@ Rails.application.routes.draw do
       resources :results
     end
     
+    # Rota para o perfil do usuário
+    get 'profile', to: 'profile#index'
+    
     # Rota raiz para usuários autenticados
     root to: 'dashboard#index', as: :app_root
   end
