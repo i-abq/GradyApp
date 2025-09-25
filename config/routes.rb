@@ -36,6 +36,9 @@ Rails.application.routes.draw do
     # Rota para a página de perguntas
     get 'questions', to: 'questions#index'
     
+    # Rota para a página de booklets
+    get 'booklets', to: 'booklets#index'
+    
     # Rota raiz para usuários autenticados
     root to: 'dashboard#index', as: :app_root
   end
