@@ -33,6 +33,9 @@ Rails.application.routes.draw do
     # Rota para o perfil do usuário
     get 'profile', to: 'profile#index'
     
+    # Rota para a página de perguntas
+    get 'questions', to: 'questions#index'
+    
     # Rota raiz para usuários autenticados
     root to: 'dashboard#index', as: :app_root
   end

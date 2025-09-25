@@ -1,0 +1,155 @@
+<div class="questions-container">
+  <div class="construction-message">
+    <div class="construction-icon">
+      <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#244b67" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M2 17L12 22L22 17" stroke="#244b67" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M2 12L12 17L22 12" stroke="#244b67" stroke-width="2" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    
+    <h1>Página em Construção</h1>
+    <p class="construction-text">
+      Esta página ainda está sendo desenvolvida. Em breve você terá acesso a todas as funcionalidades de perguntas e respostas.
+    </p>
+    
+    <div class="construction-details">
+      <p><strong>O que está chegando:</strong></p>
+      <ul>
+        <li>- Sistema de perguntas e respostas</li>
+        <li>- Busca avançada de conteúdo</li>
+        <li>- Relatórios e estatísticas</li>
+      </ul>
+    </div>
+    
+    <div class="construction-actions">
+      <a href="<%= root_path %>" class="btn-primary">Voltar ao Dashboard</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .questions-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .construction-message {
+    text-align: center;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    padding: 50px 40px;
+    max-width: 600px;
+    width: 100%;
+  }
+  
+  .construction-icon {
+    margin-bottom: 30px;
+    opacity: 0.8;
+  }
+  
+  .construction-icon svg {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  .construction-message h1 {
+    color: #172a3a;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+  }
+  
+  .construction-text {
+    color: #6b7280;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .construction-details {
+    background-color: #f8fafc;
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 30px;
+    text-align: left;
+  }
+  
+  .construction-details p {
+    color: #172a3a;
+    font-weight: 600;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+  }
+  
+  .construction-details ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .construction-details li {
+    color: #4b5563;
+    font-size: 1rem;
+    padding: 8px 0;
+    border-bottom: 1px solid #e5e7eb;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .construction-details li:last-child {
+    border-bottom: none;
+  }
+  
+  .construction-actions {
+    margin-top: 30px;
+  }
+  
+  .btn-primary {
+    background-color: #244b67;
+    color: white;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    display: inline-block;
+    font-family: 'DM Sans', sans-serif;
+  }
+  
+  .btn-primary:hover {
+    background-color: #172a3a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(36, 75, 103, 0.3);
+  }
+  
+  @media (max-width: 768px) {
+    .questions-container {
+      padding: 20px 15px;
+    }
+    
+    .construction-message {
+      padding: 30px 20px;
+    }
+    
+    .construction-message h1 {
+      font-size: 2rem;
+    }
+    
+    .construction-text {
+      font-size: 1.1rem;
+    }
+  }
+</style>
