@@ -15,7 +15,7 @@
         <%= link_to "https://app.grady.com.br/profile", class: "btn-icon" do %>
           <%= image_tag 'icons/user-icon.svg', alt: 'Minha Conta' %>
         <% end %>
-        <%= button_to destroy_user_session_path, method: :delete, class: "btn-icon" do %>
+        <%= button_to destroy_user_session_path, method: :delete, class: "btn-icon", data: { turbo: false } do %>
           <%= image_tag 'icons/log-out-icon.svg', alt: 'Sair' %>
         <% end %>
       <% else %>
