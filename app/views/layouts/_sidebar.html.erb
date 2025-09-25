@@ -1,31 +1,31 @@
 <aside class="sidebar" data-sidebar-target="<%= sidebar_target %>">
   <ul class="sidebar-menu">
     <li>
-      <a href="<%= app_root_path %>" class="active">
+      <a href="<%= app_root_path %>" class="<%= 'active' if current_page?(app_root_path) %>">
         <%= image_tag 'icons/home-icon.svg', alt: 'Início' %>
         <span>Início</span>
       </a>
     </li>
     <li>
-      <a href="https://app.grady.com.br/questions">
+      <a href="https://app.grady.com.br/questions" class="<%= 'active' if current_page?('/questions') %>">
         <%= image_tag 'icons/layout-list-icon.svg', alt: 'Questões' %>
         <span>Questões</span>
       </a>
     </li>
     <li>
-      <a href="https://app.grady.com.br/booklets">
+      <a href="https://app.grady.com.br/booklets" class="<%= 'active' if current_page?('/booklets') %>">
         <%= image_tag 'icons/book-open-check-icon.svg', alt: 'Cadernos de Prova' %>
         <span>Cadernos de Prova</span>
       </a>
     </li>
     <li>
-      <a href="https://app.grady.com.br/layouts">
+      <a href="https://app.grady.com.br/layouts" class="<%= 'active' if current_page?('/layouts') %>">
         <%= image_tag 'icons/sliders-horizontal-icon.svg', alt: 'Layouts' %>
         <span>Layouts</span>
       </a>
     </li>
     <li>
-      <a href="https://app.grady.com.br/results">
+      <a href="https://app.grady.com.br/results" class="<%= 'active' if current_page?('/results') %>">
         <%= image_tag 'icons/file-check-icon.svg', alt: 'Resultados' %>
         <span>Resultados</span>
       </a>
