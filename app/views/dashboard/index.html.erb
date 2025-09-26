@@ -1,66 +1,192 @@
-<div class="dashboard-container">
-  <h1>Bem-vindo ao seu Dashboard</h1>
-  
-  <div class="dashboard-content">
-    <div class="dashboard-card">
-      <h2>Seus Projetos</h2>
-      <p>Você ainda não tem projetos. Clique no botão abaixo para criar seu primeiro projeto.</p>
-      <button class="btn-primary">Criar Projeto</button>
-    </div>
-    
-    <div class="dashboard-card">
-      <h2>Atividade Recente</h2>
-      <p>Nenhuma atividade recente para mostrar.</p>
+<div class="home-container">
+  <!-- Home::WelcomeSection -->
+  <div class="welcome-section">
+    <h1 class="welcome-title">Welcome to Grady</h1>
+    <p class="welcome-subtitle">Get started with these Quick Actions</p>
+  </div>
+
+  <!-- Home::QuickActionsCard -->
+  <div class="quick-actions-card">
+    <div class="quick-actions-list">
+      <div class="quick-action-button primary-action">
+        <div class="action-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <line x1="9" y1="9" x2="15" y2="9"/>
+            <line x1="9" y1="13" x2="15" y2="13"/>
+            <line x1="9" y1="17" x2="15" y2="17"/>
+          </svg>
+        </div>
+        <div class="action-content">
+          <span class="action-label">Add new form</span>
+          <span class="action-shortcut">⌘+N</span>
+        </div>
+      </div>
+
+      <div class="quick-action-button">
+        <div class="action-content">
+          <span class="action-label">View recent forms</span>
+          <span class="action-shortcut">⌘+R</span>
+        </div>
+      </div>
+
+      <div class="quick-action-button">
+        <div class="action-content">
+          <span class="action-label">Manage templates</span>
+          <span class="action-shortcut">⌘+T</span>
+        </div>
+      </div>
+
+      <div class="quick-action-button">
+        <div class="action-content">
+          <span class="action-label">Analytics dashboard</span>
+          <span class="action-shortcut">⌘+A</span>
+        </div>
+      </div>
+
+      <div class="quick-action-button">
+        <div class="action-content">
+          <span class="action-label">Settings & preferences</span>
+          <span class="action-shortcut">⌘+,</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <style>
-  .dashboard-container {
-    max-width: 1200px;
+  /* Home Container */
+  .home-container {
+    max-width: 800px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 40px 20px;
   }
-  
-  .dashboard-container h1 {
+
+  /* Home::WelcomeSection */
+  .welcome-section {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .welcome-title {
     color: #172a3a;
-    margin-bottom: 30px;
-    font-size: 2rem;
-  }
-  
-  .dashboard-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-  }
-  
-  .dashboard-card {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-  
-  .dashboard-card h2 {
-    color: #172a3a;
-    font-size: 1.4rem;
-    margin-bottom: 15px;
-  }
-  
-  .btn-primary {
-    background-color: #244b67;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 5px;
-    font-weight: 600;
-    cursor: pointer;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 12px;
     font-family: 'DM Sans', sans-serif;
-    margin-top: 15px;
   }
-  
-  .btn-primary:hover {
+
+  .welcome-subtitle {
+    color: #6b7280;
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin: 0;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* Home::QuickActionsCard */
+  .quick-actions-card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
+    padding: 24px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .quick-actions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* QuickActionButton */
+  .quick-action-button {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    background-color: #f9fafb;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .quick-action-button:hover {
+    background-color: #f3f4f6;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .quick-action-button.primary-action {
     background-color: #172a3a;
+    color: white;
+    border-color: #172a3a;
+  }
+
+  .quick-action-button.primary-action:hover {
+    background-color: #244b67;
+    border-color: #244b67;
+  }
+
+  .action-icon {
+    display: flex;
+    align-items: center;
+    margin-right: 12px;
+    color: inherit;
+  }
+
+  .action-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .action-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .action-label {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: inherit;
+  }
+
+  .action-shortcut {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  }
+
+  .quick-action-button.primary-action .action-shortcut {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 640px) {
+    .home-container {
+      padding: 20px 16px;
+    }
+    
+    .welcome-title {
+      font-size: 2rem;
+    }
+    
+    .quick-actions-card {
+      padding: 20px;
+    }
+    
+    .action-shortcut {
+      display: none;
+    }
   }
 </style> 
