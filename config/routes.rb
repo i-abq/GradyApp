@@ -42,8 +42,14 @@ Rails.application.routes.draw do
     # Rota para a página de layouts
     get 'layouts', to: 'layouts#index'
     
+    # Rota para a página de respostas
+    get 'answers', to: 'answers#index'
+    
     # Rota para a página de resultados
     get 'results', to: 'results#index'
+    
+    # Rota para a página de divulgação
+    get 'publications', to: 'publications#index'
     
     # Rota raiz para usuários autenticados
     root to: 'dashboard#index', as: :app_root

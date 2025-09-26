@@ -25,9 +25,21 @@
       </a>
     </li>
     <li>
+      <a href="https://app.grady.com.br/answers" class="<%= 'active' if current_page?('/answers') %>">
+        <%= image_tag 'icons/message-square-text-icon.svg', alt: 'Respostas' %>
+        <span>Respostas</span>
+      </a>
+    </li>
+    <li>
       <a href="https://app.grady.com.br/results" class="<%= 'active' if current_page?('/results') %>">
         <%= image_tag 'icons/file-check-icon.svg', alt: 'Resultados' %>
         <span>Resultados</span>
+      </a>
+    </li>
+    <li>
+      <a href="https://app.grady.com.br/publications" class="<%= 'active' if current_page?('/publications') %>">
+        <%= image_tag 'icons/megaphone-icon.svg', alt: 'Divulgação' %>
+        <span>Divulgação</span>
       </a>
     </li>
   </ul>
