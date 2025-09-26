@@ -68,6 +68,6 @@ end
 
 gem "devise", "~> 4.9"
 
-gem "tailwindcss-rails", "~> 2.7", ">= 2.7.9"
-
 gem "shadcn-ui", "~> 0.0.15"
+
+gem "tailwindcss-rails", "~> 4.3"
