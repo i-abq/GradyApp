@@ -236,6 +236,9 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    shadcn-ui (0.0.15)
+      tailwind_merge (~> 0.12)
+    sin_lru_redux (2.5.2)
     sprockets (4.2.2)
       concurrent-ruby (~> 1.0)
       logger
@@ -247,6 +250,18 @@ GEM
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
     stringio (3.1.7)
+    tailwind_merge (0.16.0)
+      sin_lru_redux (~> 2.5)
+    tailwindcss-rails (2.7.9-aarch64-linux)
+      railties (>= 7.0.0)
+    tailwindcss-rails (2.7.9-arm-linux)
+      railties (>= 7.0.0)
+    tailwindcss-rails (2.7.9-arm64-darwin)
+      railties (>= 7.0.0)
+    tailwindcss-rails (2.7.9-x86_64-darwin)
+      railties (>= 7.0.0)
+    tailwindcss-rails (2.7.9-x86_64-linux)
+      railties (>= 7.0.0)
     thor (1.3.2)
     timeout (0.4.3)
     turbo-rails (2.0.13)
@@ -291,14 +306,16 @@ DEPENDENCIES
   puma (>= 5.0)
   rails (~> 7.1.3)
   selenium-webdriver
+  shadcn-ui (~> 0.0.15)
   sprockets-rails
   stimulus-rails
+  tailwindcss-rails (~> 2.7, >= 2.7.9)
   turbo-rails
   tzinfo-data
   web-console
 
 RUBY VERSION
-   ruby 3.3.0p0
+   ruby 3.3.8p144
 
 BUNDLED WITH
-   2.5.3
+   2.5.22
