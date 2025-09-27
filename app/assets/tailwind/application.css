@@ -1,1 +1,10 @@
+@config "../../config/tailwind.config.js";
+
+@import "../stylesheets/shadcn.css";
 @import "tailwindcss";
+
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/aspect-ratio";
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/container-queries";
+@plugin "tailwindcss-animate";
