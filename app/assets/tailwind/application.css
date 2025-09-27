@@ -1,4 +1,4 @@
-@config "./config/tailwind.config.js";
+@config "../../config/tailwind.config.js";
 
 @import "../stylesheets/shadcn.css";
 @import "tailwindcss";
