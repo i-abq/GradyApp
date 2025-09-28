@@ -2,8 +2,8 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', sans-serif;
-  color: #172f41;
-  background-color: #FFFFFF;
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--background));
 }
 
 /* Scoped styles for the main application layout */
@@ -16,11 +16,6 @@ body.app-body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-}
-
-h1, h2, h3, h4, h5, h6, button, .btn {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 700;
 }
 
 .navbar {

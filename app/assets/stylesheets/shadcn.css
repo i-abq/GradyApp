@@ -73,6 +73,11 @@
       "calt" 1;
   }
 
+  ::selection {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
   .code-sample {
     @apply max-h-[650px] min-h-[350px] overflow-x-auto rounded-lg border bg-zinc-950 dark:bg-zinc-900;
   }

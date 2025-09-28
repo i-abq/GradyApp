@@ -1,0 +1,112 @@
+@layer components {
+  /* Buttons */
+  .btn {
+    @apply inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ring-offset-background;
+  }
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+  }
+  .btn-outline {
+    @apply border border-input bg-transparent hover:bg-accent hover:text-accent-foreground;
+  }
+  .btn-ghost {
+    @apply hover:bg-accent hover:text-accent-foreground;
+  }
+  .btn-ghost[aria-selected="true"],
+  .btn-ghost[data-state="active"] {
+    @apply bg-accent text-accent-foreground;
+  }
+  .btn-destructive {
+    @apply bg-destructive text-destructive-foreground hover:bg-destructive/90;
+  }
+  .btn-sm {
+    @apply h-9 px-3;
+  }
+  .btn-lg {
+    @apply h-11 px-8;
+  }
+  .btn-icon {
+    @apply h-10 w-10 p-0;
+  }
+
+  /* Inputs */
+  .input {
+    @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .textarea {
+    @apply input min-h-[120px];
+  }
+  .select {
+    @apply input pr-9 appearance-none bg-[right_0.5rem_center] bg-no-repeat;
+  }
+
+  /* Label */
+  .label {
+    @apply text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70;
+  }
+
+  /* Checkbox */
+  .checkbox {
+    @apply h-4 w-4 shrink-0 rounded border border-input bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold;
+  }
+  .badge-default {
+    @apply border-transparent bg-primary text-primary-foreground;
+  }
+  .badge-secondary {
+    @apply border-transparent bg-secondary text-secondary-foreground;
+  }
+  .badge-destructive {
+    @apply border-transparent bg-destructive text-destructive-foreground;
+  }
+  .badge-outline {
+    @apply text-foreground;
+  }
+
+  /* Card */
+  .card {
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+  }
+  .card-header {
+    @apply flex flex-col space-y-1.5 p-6;
+  }
+  .card-title {
+    @apply text-lg font-semibold leading-none tracking-tight;
+  }
+  .card-description {
+    @apply text-sm text-muted-foreground;
+  }
+  .card-content {
+    @apply p-6 pt-0;
+  }
+  .card-footer {
+    @apply flex items-center p-6 pt-0;
+  }
+
+  /* Alert */
+  .alert {
+    @apply relative w-full rounded-lg border p-4 text-sm;
+  }
+  .alert-title {
+    @apply mb-1 font-medium leading-none tracking-tight;
+  }
+  .alert-description {
+    @apply text-sm text-muted-foreground;
+  }
+  .alert-info {
+    @apply border-input bg-accent text-foreground;
+  }
+  .alert-success {
+    @apply border-transparent bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))];
+  }
+  .alert-destructive {
+    @apply border-destructive/50 text-destructive dark:border-destructive;
+  }
+}

@@ -1,0 +1,130 @@
+<div class="container space-y-10 py-10">
+  <section class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div class="space-y-1">
+      <h1 class="text-3xl font-semibold tracking-tight">Tasks</h1>
+      <p class="text-muted-foreground">
+        Track issues, manage sprints, and stay on top of your work using the Grady design tokens.
+      </p>
+    </div>
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+      <button class="btn btn-outline w-full sm:w-auto">Import</button>
+      <button class="btn btn-primary w-full sm:w-auto">
+        <%= image_tag 'icons/circle-plus-icon.svg', alt: '', class: 'h-4 w-4' %>
+        New Task
+      </button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-header">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" class="btn btn-ghost px-3 py-2" aria-selected="false">All</button>
+          <button type="button" class="btn btn-ghost px-3 py-2" aria-selected="true">Active</button>
+          <button type="button" class="btn btn-ghost px-3 py-2" aria-selected="false">Backlog</button>
+          <button type="button" class="btn btn-ghost px-3 py-2" aria-selected="false">Done</button>
+        </div>
+        <div class="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
+          <div class="relative w-full sm:w-64">
+            <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted-foreground">🔍</span>
+            <input class="input pl-9" type="search" placeholder="Search tasks" />
+          </div>
+          <select class="select sm:w-48">
+            <option>Status: All</option>
+            <option>Todo</option>
+            <option>In progress</option>
+            <option>Done</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="card-content space-y-4">
+      <% [
+        { title: "Dashboard redesign", status: "In progress", badge_class: "badge badge-secondary" },
+        { title: "Invoice workflow", status: "Todo", badge_class: "badge badge-outline" },
+        { title: "Onboarding email series", status: "Done", badge_class: "badge badge-default" }
+      ].each do |task| %>
+        <div class="flex items-center gap-3 rounded-lg border border-transparent p-3 transition hover:border-border">
+          <input id="task-<%= task[:title].parameterize %>" type="checkbox" class="checkbox" />
+          <label for="task-<%= task[:title].parameterize %>" class="label flex-1">
+            <span class="flex flex-col">
+              <span class="text-sm font-semibold"><%= task[:title] %></span>
+              <span class="text-xs text-muted-foreground">Assigned to you · Due next week</span>
+            </span>
+          </label>
+          <span class="<%= task[:badge_class] %>"><%= task[:status] %></span>
+          <button type="button" class="btn btn-ghost btn-icon" aria-label="Open menu">⋯</button>
+        </div>
+      <% end %>
+    </div>
+    <div class="card-footer justify-between">
+      <p class="text-sm text-muted-foreground">Showing 1 to 3 of 23 entries</p>
+      <div class="flex items-center gap-2">
+        <button type="button" class="btn btn-outline btn-sm">Previous</button>
+        <button type="button" class="btn btn-outline btn-sm">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid gap-6 md:grid-cols-2">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Create task</h2>
+          <p class="card-description">Form controls with tokens baked in.</p>
+        </div>
+      </div>
+      <div class="card-content space-y-4">
+        <label class="label" for="task-name">Task name</label>
+        <input id="task-name" type="text" class="input" placeholder="Add a descriptive title" />
+        <label class="label" for="task-notes">Notes</label>
+        <textarea id="task-notes" class="textarea" placeholder="Capture details for collaborators"></textarea>
+        <div>
+          <label class="label" for="task-status">Status</label>
+          <select id="task-status" class="select mt-2">
+            <option>Todo</option>
+            <option>In progress</option>
+            <option>Blocked</option>
+            <option>Done</option>
+          </select>
+        </div>
+      </div>
+      <div class="card-footer justify-end">
+        <button class="btn btn-secondary">Save draft</button>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      <div class="alert alert-info">
+        <h3 class="alert-title">Heads up!</h3>
+        <p class="alert-description">You&apos;re using the default shadcn color tokens inside Rails.</p>
+      </div>
+      <div class="alert alert-success">
+        <h3 class="alert-title">Success</h3>
+        <p class="alert-description">Everything on this page uses the new design system classes.</p>
+      </div>
+      <div class="alert alert-destructive">
+        <h3 class="alert-title">Attention</h3>
+        <p class="alert-description">This is how destructive messaging appears.</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="badge badge-default">Default</span>
+        <span class="badge badge-secondary">Secondary</span>
+        <span class="badge badge-destructive">Destructive</span>
+        <span class="badge badge-outline">Outline</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <button class="btn btn-primary">Primary</button>
+        <button class="btn btn-secondary">Secondary</button>
+        <button class="btn btn-outline">Outline</button>
+        <button class="btn btn-ghost">Ghost</button>
+        <button class="btn btn-destructive">Destructive</button>
+        <button class="btn btn-primary btn-sm">Small</button>
+        <button class="btn btn-primary btn-lg">Large</button>
+        <button class="btn btn-primary btn-icon" aria-label="Add">
+          <%= image_tag 'icons/circle-plus-icon.svg', alt: '', class: 'h-4 w-4' %>
+        </button>
+      </div>
+    </div>
+  </section>
+</div>

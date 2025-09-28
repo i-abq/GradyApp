@@ -3,6 +3,8 @@
 @import "../stylesheets/shadcn.css";
 @import "tailwindcss";
 
+@import "../stylesheets/components.css";
+
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/aspect-ratio";
 @plugin "@tailwindcss/typography";

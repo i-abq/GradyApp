@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   constraints host: /localhost/ do
     root "marketing#home" # Adicionada rota raiz para localhost
+    get "styleguide", to: "components#index"
   end
 
   # Domínio marketing (grady.com.br e www.grady.com.br)
@@ -41,6 +42,9 @@ Rails.application.routes.draw do
     
     # Rota para a página de layouts
     get 'layouts', to: 'layouts#index'
+    
+    # Rota para o styleguide de componentes
+    get 'styleguide', to: 'components#index'
     
     # Rota para a página de respostas
     get 'answers', to: 'answers#index'

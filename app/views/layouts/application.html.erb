@@ -7,11 +7,6 @@
     <%= csp_meta_tag %>
     <%= favicon_link_tag 'icons/grady-favicon.ico' %>
 
-    <!-- Google Fonts - DM Sans only -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
-    
     <!-- Self-hosted Inter Font -->
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
 
@@ -19,7 +14,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="<%= 'app-body' if user_signed_in? %>" data-controller="sidebar">
+  <body class="font-sans antialiased <%= "app-body" if user_signed_in? %>" data-controller="sidebar">
     <%= render 'layouts/topbar' %>
     
     <% if user_signed_in? %>
