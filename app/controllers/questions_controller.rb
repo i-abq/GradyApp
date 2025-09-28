@@ -13,7 +13,7 @@ class QuestionsController < ApplicationController
   def index
     @filters = {
       q: params[:q].to_s.strip,
-      difficulty: params[:difficulty].presence,
+      difficulty: Array(params[:difficulty]).flatten.map(&:presence).compact,
       area: params[:area].presence,
       theme: params[:theme].presence
     }
@@ -22,19 +22,20 @@ class QuestionsController < ApplicationController
     @difficulty_options = difficulty_options
     @area_options = area_options
     @theme_options = theme_options
+    @difficulty_counts = difficulty_counts
   end
 
   private
 
   def filter_questions
     query = @filters[:q].presence
-    difficulty = @filters[:difficulty]
+    selected_difficulties = Array(@filters[:difficulty])
     area = @filters[:area]
     theme = @filters[:theme]
 
     SAMPLE_QUESTIONS.select do |question|
       matches_query = query.nil? || question[:title].downcase.include?(query.downcase)
-      matches_difficulty = difficulty.nil? || question[:difficulty] == difficulty
+      matches_difficulty = selected_difficulties.blank? || selected_difficulties.include?(question[:difficulty])
       matches_area = area.nil? || question[:area] == area
       matches_theme = theme.nil? || question[:theme] == theme
 
@@ -52,5 +53,23 @@ class QuestionsController < ApplicationController
 
   def theme_options
     SAMPLE_QUESTIONS.map { |question| question[:theme] }.uniq.sort.map { |theme| [theme, theme] }
+  end
+
+  def difficulty_counts
+    query = @filters[:q].presence&.downcase
+    area = @filters[:area]
+    theme = @filters[:theme]
+
+    counts = SAMPLE_QUESTIONS.each_with_object(Hash.new(0)) do |question, acc|
+      next if query.present? && !question[:title].downcase.include?(query)
+      next if area.present? && question[:area] != area
+      next if theme.present? && question[:theme] != theme
+
+      acc[question[:difficulty]] += 1
+    end
+
+    QuestionsHelper::DIFFICULTY_LABELS.keys.each_with_object({}) do |difficulty, acc|
+      acc[difficulty] = counts[difficulty] || 0
+    end
   end
 end

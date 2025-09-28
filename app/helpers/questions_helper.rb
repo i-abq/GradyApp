@@ -48,7 +48,7 @@ module QuestionsHelper
     "w-full overflow-hidden rounded-lg border border-border bg-card text-card-foreground"
   end
 
-  def filter_dropdown(form, param, label:, options:, current_value:, all_label: "Todas")
+  def single_filter_dropdown(form, param, label:, options:, current_value:, all_label: "Todas")
     normalized_current = current_value.to_s
     normalized_options = [[all_label, ""]] + options.map { |option_label, option_value| [option_label, option_value.to_s] }
     selected_label = normalized_options.find { |_, value| value == normalized_current }&.first || all_label
@@ -86,6 +86,115 @@ module QuestionsHelper
             end
           )
         end
+    end
+  end
+
+  def multi_filter_dropdown(form, param:, label:, options:, selected_values:, counts:, all_label: "Todas")
+    normalized_selected = Array(selected_values).map(&:to_s)
+    options_with_values = options.map { |option_label, option_value| [option_label, option_value.to_s] }
+    panel_id = "#{param}-filter-panel"
+
+    summary_text = if normalized_selected.empty?
+      all_label
+    elsif normalized_selected.length <= 2
+      labels_for_values(normalized_selected, options_with_values).join(", ")
+    else
+      "#{normalized_selected.length} selecionadas"
+    end
+
+    counts = counts || {}
+
+    content_tag :div, class: "relative", data: {
+      controller: "multi-filter",
+      "multi-filter-param-name-value": param,
+      "multi-filter-empty-label-value": all_label
+    } do
+      hidden_inputs = content_tag(:div, data: { "multi-filter-target": "inputs" }) do
+        safe_join(normalized_selected.map { |value| form.hidden_field("#{param}[]", value: value, id: nil, data: { value: value }) })
+      end
+
+      trigger_button = button_tag type: :button,
+                                  class: tw("btn btn-outline btn-sm relative w-full gap-3 pr-9 text-left justify-start border-dotted border-border"),
+                                  data: { "multi-filter-target": "trigger", action: "click->multi-filter#toggle" },
+                                  aria: { expanded: "false", controls: panel_id } do
+        safe_join([
+          content_tag(:span, class: "flex items-center gap-2") do
+            safe_join([
+              image_tag("icons/circle-plus-icon.svg", alt: "", class: "h-4 w-4"),
+              content_tag(:span, label, class: "text-sm font-medium text-foreground")
+            ])
+          end,
+          content_tag(:span, summary_text, class: "text-xs text-muted-foreground", data: { "multi-filter-target": "summary" }),
+          content_tag(:span, "▾", class: "pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground")
+        ])
+      end
+
+      search_input = content_tag(:div, class: "relative mb-2") do
+        icon = content_tag(:span, class: "pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted-foreground") do
+          inline_search_icon
+        end
+
+        input = text_field_tag nil, "",
+                               placeholder: "Filtrar opções...",
+                               class: "input h-9 w-full border border-border pl-9 text-sm focus-visible:ring-0 focus-visible:border-border",
+                               data: { "multi-filter-target": "search", action: "input->multi-filter#filterOptions" }
+
+        safe_join([icon, input])
+      end
+
+      options_list = content_tag(:div, class: "space-y-1 max-h-64 overflow-y-auto", data: { "multi-filter-target": "options" }) do
+        safe_join(
+          options_with_values.map do |option_label, option_value|
+            selected = normalized_selected.include?(option_value)
+            option_count = counts[option_value] || 0
+
+            content_tag :label,
+                        class: tw("flex items-center gap-3 rounded-md px-3 py-2 text-sm text-foreground transition-colors cursor-pointer select-none hover:bg-accent hover:text-accent-foreground"),
+                        data: {
+                          "multi-filter-target": "option",
+                          value: option_value,
+                          label: option_label,
+                          search: option_label.downcase
+                        } do
+              checkbox = check_box_tag nil, option_value, selected,
+                                        class: "checkbox",
+                                        data: { "multi-filter-target": "checkbox", label: option_label, action: "change->multi-filter#toggleOption" }
+
+              label_span = content_tag(:span, option_label, class: "flex-1 text-sm")
+              count_badge = content_tag(:span, option_count, class: "badge badge-outline ml-auto")
+
+              safe_join([checkbox, label_span, count_badge])
+            end
+          end
+        )
+      end
+
+      panel = content_tag(:div,
+                          class: "absolute left-0 z-30 mt-2 w-64 rounded-md border border-border bg-popover p-3 hidden",
+                          id: panel_id,
+                          data: { "multi-filter-target": "panel" }) do
+        safe_join([search_input, options_list])
+      end
+
+      safe_join([hidden_inputs, trigger_button, panel])
+    end
+  end
+
+  private
+
+  def labels_for_values(selected_values, options)
+    index = options.each_with_object({}) do |(option_label, option_value), acc|
+      acc[option_value] = option_label
+    end
+    selected_values.map { |value| index[value] }.compact
+  end
+
+  def inline_search_icon
+    content_tag(:svg, xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round", class: "h-4 w-4") do
+      safe_join([
+        content_tag(:circle, nil, cx: "11", cy: "11", r: "8"),
+        content_tag(:path, nil, d: "m21 21-3.5-3.5")
+      ])
     end
   end
 end

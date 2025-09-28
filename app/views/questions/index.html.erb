@@ -13,9 +13,17 @@
             <%= form.text_field :q, value: @filters[:q], placeholder: "Buscar por título", class: "input pl-9", data: { action: "input->filters#submit" } %>
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <%= filter_dropdown(form, :difficulty, label: "Dificuldade", options: @difficulty_options, current_value: @filters[:difficulty], all_label: "Todas") %>
-            <%= filter_dropdown(form, :area, label: "Área", options: @area_options, current_value: @filters[:area], all_label: "Todas") %>
-            <%= filter_dropdown(form, :theme, label: "Tema", options: @theme_options, current_value: @filters[:theme], all_label: "Todos") %>
+            <%= multi_filter_dropdown(
+                  form,
+                  param: :difficulty,
+                  label: "Dificuldade",
+                  options: @difficulty_options,
+                  selected_values: @filters[:difficulty],
+                  counts: @difficulty_counts,
+                  all_label: "Todas"
+                ) %>
+            <%= single_filter_dropdown(form, :area, label: "Área", options: @area_options, current_value: @filters[:area], all_label: "Todas") %>
+            <%= single_filter_dropdown(form, :theme, label: "Tema", options: @theme_options, current_value: @filters[:theme], all_label: "Todos") %>
           </div>
         </div>
         <div class="text-xs text-muted-foreground">
