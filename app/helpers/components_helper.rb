@@ -5,11 +5,11 @@ module ComponentsHelper
     TailwindMerge::Merger.new.merge(classes.join(" "))
   end
 
-  PRIMARY_CLASSES = " bg-primary text-primary-foreground hover:bg-primary/80 "
-  SECONDARY_CLASSES = " bg-secondary text-secondary-foreground hover:bg-secondary/80 "
-  OUTLINE_CLASSES = "  border border-input bg-background hover:bg-accent hover:text-accent-foreground "
-  GHOST_CLASSES = " hover:bg-accent hover:text-accent-foreground  "
-  DESTRUCTIVE_CLASSES = " bg-destructive text-destructive-foreground hover:bg-destructive/90 "
+  PRIMARY_CLASSES = "btn-primary"
+  SECONDARY_CLASSES = "btn-secondary"
+  OUTLINE_CLASSES = "btn-outline"
+  GHOST_CLASSES = "btn-ghost"
+  DESTRUCTIVE_CLASSES = "btn-destructive"
 
   module Button
     PRIMARY = ComponentsHelper::PRIMARY_CLASSES

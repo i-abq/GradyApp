@@ -1,57 +1,40 @@
 <div class="space-y-8">
   <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
     <div class="w-full flex-1">
-      <%= form_with url: questions_path, method: :get, local: true, html: { class: "flex h-full flex-col rounded-lg border bg-card text-card-foreground shadow-sm" } do |form| %>
-        <div class="border-b px-6 py-4">
-          <h1 class="text-lg font-semibold leading-tight">Filtros</h1>
-          <p class="mt-1 text-sm text-muted-foreground">Refine a lista de questões usando os campos abaixo.</p>
-        </div>
-
-        <div class="grid gap-4 px-6 py-5 md:grid-cols-2 xl:grid-cols-4">
-          <div class="md:col-span-2 xl:col-span-1">
-            <%= form.label :q, "Título", class: "mb-2 block text-sm font-medium text-foreground" %>
-            <%= form.text_field :q, value: @filters[:q], placeholder: "Buscar por título", class: "w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" %>
+      <%= form_with url: questions_path, method: :get, local: true, html: { class: "flex flex-col gap-4 rounded-lg border border-border bg-card p-4", data: { controller: "filters", filters_delay_value: 200 } } do |form| %>
+        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div class="relative w-full md:max-w-sm lg:max-w-md">
+            <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted-foreground">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-3.5-3.5" />
+              </svg>
+            </span>
+            <%= form.text_field :q, value: @filters[:q], placeholder: "Buscar por título", class: "input pl-9", data: { action: "input->filters#submit" } %>
           </div>
-
-          <div>
-            <%= form.label :difficulty, "Dificuldade", class: "mb-2 block text-sm font-medium text-foreground" %>
-            <%= form.select :difficulty, options_for_select(@difficulty_options, @filters[:difficulty]), { include_blank: "Todas" }, class: "w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" %>
-          </div>
-
-          <div>
-            <%= form.label :area, "Área", class: "mb-2 block text-sm font-medium text-foreground" %>
-            <%= form.select :area, options_for_select(@area_options, @filters[:area]), { include_blank: "Todas" }, class: "w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" %>
-          </div>
-
-          <div>
-            <%= form.label :theme, "Tema", class: "mb-2 block text-sm font-medium text-foreground" %>
-            <%= form.select :theme, options_for_select(@theme_options, @filters[:theme]), { include_blank: "Todos" }, class: "w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" %>
+          <div class="flex flex-wrap items-center gap-2">
+            <%= filter_dropdown(form, :difficulty, label: "Dificuldade", options: @difficulty_options, current_value: @filters[:difficulty], all_label: "Todas") %>
+            <%= filter_dropdown(form, :area, label: "Área", options: @area_options, current_value: @filters[:area], all_label: "Todas") %>
+            <%= filter_dropdown(form, :theme, label: "Tema", options: @theme_options, current_value: @filters[:theme], all_label: "Todos") %>
           </div>
         </div>
-
-        <div class="flex items-center justify-between gap-3 border-t bg-muted/30 px-6 py-4">
-          <div class="text-sm text-muted-foreground">
-            <%= pluralize(@questions.size, "questão", "questões") %> encontradas
-          </div>
-          <div class="flex items-center gap-3">
-            <%= link_to "Limpar filtros", questions_path, class: button_class(:ghost) %>
-            <%= form.submit "Aplicar filtros", class: button_class(:primary) %>
-          </div>
+        <div class="text-xs text-muted-foreground">
+          <%= pluralize(@questions.size, "questão", "questões") %> encontradas
         </div>
       <% end %>
     </div>
 
-    <div class="flex items-center gap-3 self-start">
-      <%= button_tag "Configurar Prova", class: button_class(:secondary), type: :button %>
-      <%= button_tag "Adicionar questão", class: button_class(:primary), type: :button %>
+    <div class="flex items-center gap-2 self-start">
+      <%= button_tag "Configurar Prova", class: "btn btn-secondary btn-sm", type: :button %>
+      <%= button_tag "Adicionar questão", class: "btn btn-primary btn-sm", type: :button %>
     </div>
   </div>
 
   <div class="overflow-x-auto">
     <div class="min-w-full lg:min-w-[720px]">
       <div class="<%= table_container_class %>">
-        <table class="w-full border-collapse text-sm">
-          <thead class="bg-muted/40 text-xs uppercase tracking-wide text-muted-foreground">
+        <table class="w-full border-collapse text-sm text-foreground">
+          <thead class="bg-muted/40 text-xs uppercase tracking-wide text-foreground">
             <tr>
               <th scope="col" class="px-6 py-3 text-left font-semibold">ID</th>
               <th scope="col" class="px-6 py-3 text-left font-semibold">Título</th>
@@ -64,13 +47,13 @@
             <% if @questions.any? %>
               <% @questions.each do |question| %>
                 <tr class="transition-colors hover:bg-muted/30">
-                  <td class="px-6 py-4 font-medium text-foreground"><%= question[:id] %></td>
-                  <td class="px-6 py-4 text-foreground"><%= question[:title] %></td>
+                  <td class="px-6 py-4 font-medium"><%= question[:id] %></td>
+                  <td class="px-6 py-4"><%= question[:title] %></td>
                   <td class="px-6 py-4">
                     <span class="<%= difficulty_badge_class(question[:difficulty]) %>"><%= difficulty_label(question[:difficulty]) %></span>
                   </td>
-                  <td class="px-6 py-4 text-foreground"><%= question[:area] %></td>
-                  <td class="px-6 py-4 text-foreground"><%= question[:theme] %></td>
+                  <td class="px-6 py-4"><%= question[:area] %></td>
+                  <td class="px-6 py-4"><%= question[:theme] %></td>
                 </tr>
               <% end %>
             <% else %>
