@@ -25,12 +25,17 @@ export default class extends Controller {
     if (this.hasTriggerTarget) {
       this.triggerTarget.setAttribute("aria-expanded", "false")
     }
+    this.submitTimeout = null
     this.syncState()
   }
 
   disconnect() {
     document.removeEventListener("click", this.boundHandleClickOutside)
     document.removeEventListener("keydown", this.boundHandleKeydown)
+    if (this.submitTimeout) {
+      clearTimeout(this.submitTimeout)
+      this.submitTimeout = null
+    }
   }
 
   toggle(event) {
@@ -96,7 +101,7 @@ export default class extends Controller {
   toggleOption(event) {
     event.stopPropagation()
     this.syncState()
-    this.submitForm()
+    this.queueSubmit()
   }
 
   syncState() {
@@ -136,6 +141,17 @@ export default class extends Controller {
     }
 
     this.summaryTarget.textContent = summary
+  }
+
+  queueSubmit() {
+    if (this.submitTimeout) {
+      clearTimeout(this.submitTimeout)
+    }
+
+    this.submitTimeout = setTimeout(() => {
+      this.submitTimeout = null
+      this.submitForm()
+    }, 600)
   }
 
   submitForm() {
