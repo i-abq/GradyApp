@@ -51,6 +51,10 @@
   /* Checkbox */
   .checkbox {
     @apply h-4 w-4 shrink-0 rounded border border-input bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    accent-color: hsl(var(--primary));
+  }
+  .checkbox:checked {
+    @apply border-primary bg-primary text-primary-foreground;
   }
 
   /* Badge */
