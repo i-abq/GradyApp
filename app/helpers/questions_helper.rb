@@ -93,6 +93,7 @@ module QuestionsHelper
     normalized_selected = Array(selected_values).map(&:to_s)
     options_with_values = options.map { |option_label, option_value| [option_label, option_value.to_s] }
     panel_id = "#{param}-filter-panel"
+    trigger_id = "#{param}-filter-trigger"
 
     summary_text = if normalized_selected.empty?
       all_label
@@ -115,6 +116,7 @@ module QuestionsHelper
 
       trigger_button = button_tag type: :button,
                                   class: tw("btn btn-outline btn-sm relative w-full gap-3 pr-9 text-left justify-start border-dotted border-border"),
+                                  id: trigger_id,
                                   data: { "multi-filter-target": "trigger", action: "click->multi-filter#toggle" },
                                   aria: { expanded: "false", controls: panel_id } do
         safe_join([
@@ -137,7 +139,8 @@ module QuestionsHelper
         input = text_field_tag nil, "",
                                placeholder: "Filtrar opções...",
                                class: "input h-9 w-full border border-border pl-9 text-sm focus-visible:ring-0 focus-visible:border-border",
-                               data: { "multi-filter-target": "search", action: "input->multi-filter#filterOptions" }
+                               data: { "multi-filter-target": "search", action: "input->multi-filter#filterOptions" },
+                               autocomplete: "off"
 
         safe_join([icon, input])
       end
@@ -149,7 +152,7 @@ module QuestionsHelper
             option_count = counts[option_value] || 0
 
             content_tag :label,
-                        class: tw("multi-filter__option flex items-center gap-3 rounded-md px-3 py-2 text-sm text-foreground transition-colors cursor-pointer select-none hover:bg-accent hover:text-accent-foreground"),
+                        class: tw("flex items-center gap-3 rounded-md px-3 py-2 text-sm text-foreground transition-colors cursor-pointer select-none hover:bg-accent hover:text-accent-foreground"),
                         data: {
                           "multi-filter-target": "option",
                           value: option_value,
@@ -157,8 +160,13 @@ module QuestionsHelper
                           search: option_label.downcase
                         } do
               checkbox = check_box_tag "", option_value, selected,
+                                        name: nil,
                                         class: "checkbox",
-                                        data: { "multi-filter-target": "checkbox", label: option_label }
+                                        data: {
+                                          "multi-filter-target": "checkbox",
+                                          label: option_label,
+                                          action: "change->multi-filter#onCheckboxChange"
+                                        }
 
               label_span = content_tag(:span, option_label, class: "flex-1 text-sm")
               count_badge = content_tag(:span, option_count, class: "badge badge-outline ml-auto")
@@ -170,8 +178,10 @@ module QuestionsHelper
       end
 
       panel = content_tag(:div,
-                          class: "absolute left-0 z-30 mt-2 w-64 rounded-md border border-border bg-popover p-3 hidden",
+                          class: "absolute left-0 z-30 mt-2 w-64 rounded-md border border-border bg-popover p-3 shadow-sm hidden",
                           id: panel_id,
+                          role: "dialog",
+                          aria: { labelledby: trigger_id, modal: "false" },
                           data: { "multi-filter-target": "panel" }) do
         safe_join([search_input, options_list])
       end

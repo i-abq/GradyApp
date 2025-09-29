@@ -16,26 +16,25 @@ export default class extends Controller {
     emptyLabel: { type: String, default: "" }
   }
 
+  initialize() {
+    this.handlePointerDown = this.handlePointerDown.bind(this)
+    this.handleKeydown = this.handleKeydown.bind(this)
+    this.pendingChanges = false
+  }
+
   connect() {
-    this.boundHandleClickOutside = this.handleClickOutside.bind(this)
-    this.boundHandleKeydown = this.handleKeydown.bind(this)
-    document.addEventListener("click", this.boundHandleClickOutside)
-    document.addEventListener("keydown", this.boundHandleKeydown)
+    document.addEventListener("pointerdown", this.handlePointerDown)
+    document.addEventListener("keydown", this.handleKeydown)
     this.element.dataset.state = "closed"
     if (this.hasTriggerTarget) {
       this.triggerTarget.setAttribute("aria-expanded", "false")
     }
-    this.submitTimeout = null
     this.syncState()
   }
 
   disconnect() {
-    document.removeEventListener("click", this.boundHandleClickOutside)
-    document.removeEventListener("keydown", this.boundHandleKeydown)
-    if (this.submitTimeout) {
-      clearTimeout(this.submitTimeout)
-      this.submitTimeout = null
-    }
+    document.removeEventListener("pointerdown", this.handlePointerDown)
+    document.removeEventListener("keydown", this.handleKeydown)
   }
 
   toggle(event) {
@@ -50,18 +49,25 @@ export default class extends Controller {
   }
 
   open() {
-    this.panelTarget.classList.remove("hidden")
+    if (this.hasPanelTarget) {
+      this.panelTarget.classList.remove("hidden")
+    }
     this.element.dataset.state = "open"
-    this.triggerTarget.setAttribute("aria-expanded", "true")
+    this.pendingChanges = false
+    if (this.hasTriggerTarget) {
+      this.triggerTarget.setAttribute("aria-expanded", "true")
+    }
 
     if (this.hasSearchTarget) {
+      this.searchTarget.value = ""
+      this.filterOptions({ target: this.searchTarget })
       requestAnimationFrame(() => {
         this.searchTarget.focus()
       })
     }
   }
 
-  close() {
+  close({ submit = true } = {}) {
     if (this.hasPanelTarget) {
       this.panelTarget.classList.add("hidden")
     }
@@ -69,13 +75,21 @@ export default class extends Controller {
     if (this.hasTriggerTarget) {
       this.triggerTarget.setAttribute("aria-expanded", "false")
     }
+
+    if (submit && this.pendingChanges) {
+      const shouldSubmit = this.pendingChanges
+      this.pendingChanges = false
+      if (shouldSubmit) {
+        this.submitForm()
+      }
+    }
   }
 
   isOpen() {
     return this.element.dataset.state === "open"
   }
 
-  handleClickOutside(event) {
+  handlePointerDown(event) {
     if (!this.isOpen()) return
     if (this.element.contains(event.target)) return
     this.close()
@@ -83,12 +97,14 @@ export default class extends Controller {
 
   handleKeydown(event) {
     if (event.key === "Escape" && this.isOpen()) {
+      event.preventDefault()
       this.close()
       this.triggerTarget?.focus()
     }
   }
 
   filterOptions(event) {
+    if (!event || !event.target) return
     const query = event.target.value.trim().toLowerCase()
 
     this.optionTargets.forEach((option) => {
@@ -98,35 +114,11 @@ export default class extends Controller {
     })
   }
 
-  toggleOption(event) {
-    const optionEl = event.currentTarget.closest("label")
-    if (!optionEl) return
-
-    const checkbox = optionEl.querySelector("input[type='checkbox']")
-    if (!checkbox) return
-
-    checkbox.checked = !checkbox.checked
-    checkbox.dispatchEvent(new Event("change", { bubbles: true }))
-  }
-
-  checkboxTargetConnected() {
-    this.checkboxTargets.forEach((checkbox) => {
-      checkbox.addEventListener("change", this.onCheckboxChange)
-    })
-  }
-
-  checkboxTargetDisconnected() {
-    this.checkboxTargets.forEach((checkbox) => {
-      checkbox.removeEventListener("change", this.onCheckboxChange)
-    })
-  }
-
-  initialize() {
-    this.onCheckboxChange = (event) => {
-      event.stopPropagation()
-      this.syncState()
-      this.queueSubmit()
-    }
+  onCheckboxChange(event) {
+    event.stopPropagation()
+    this.pendingChanges = true
+    this.syncHiddenInputs()
+    this.updateSummary()
   }
 
   syncState() {
@@ -166,17 +158,6 @@ export default class extends Controller {
     }
 
     this.summaryTarget.textContent = summary
-  }
-
-  queueSubmit() {
-    if (this.submitTimeout) {
-      clearTimeout(this.submitTimeout)
-    }
-
-    this.submitTimeout = setTimeout(() => {
-      this.submitTimeout = null
-      this.submitForm()
-    }, 600)
   }
 
   submitForm() {
