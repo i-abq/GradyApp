@@ -99,9 +99,34 @@ export default class extends Controller {
   }
 
   toggleOption(event) {
-    event.stopPropagation()
-    this.syncState()
-    this.queueSubmit()
+    const optionEl = event.currentTarget.closest("label")
+    if (!optionEl) return
+
+    const checkbox = optionEl.querySelector("input[type='checkbox']")
+    if (!checkbox) return
+
+    checkbox.checked = !checkbox.checked
+    checkbox.dispatchEvent(new Event("change", { bubbles: true }))
+  }
+
+  checkboxTargetConnected() {
+    this.checkboxTargets.forEach((checkbox) => {
+      checkbox.addEventListener("change", this.onCheckboxChange)
+    })
+  }
+
+  checkboxTargetDisconnected() {
+    this.checkboxTargets.forEach((checkbox) => {
+      checkbox.removeEventListener("change", this.onCheckboxChange)
+    })
+  }
+
+  initialize() {
+    this.onCheckboxChange = (event) => {
+      event.stopPropagation()
+      this.syncState()
+      this.queueSubmit()
+    }
   }
 
   syncState() {

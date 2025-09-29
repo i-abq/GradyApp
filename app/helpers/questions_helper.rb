@@ -149,16 +149,16 @@ module QuestionsHelper
             option_count = counts[option_value] || 0
 
             content_tag :label,
-                        class: tw("flex items-center gap-3 rounded-md px-3 py-2 text-sm text-foreground transition-colors cursor-pointer select-none hover:bg-accent hover:text-accent-foreground"),
+                        class: tw("multi-filter__option flex items-center gap-3 rounded-md px-3 py-2 text-sm text-foreground transition-colors cursor-pointer select-none hover:bg-accent hover:text-accent-foreground"),
                         data: {
                           "multi-filter-target": "option",
                           value: option_value,
                           label: option_label,
                           search: option_label.downcase
                         } do
-              checkbox = check_box_tag nil, option_value, selected,
+              checkbox = check_box_tag "", option_value, selected,
                                         class: "checkbox",
-                                        data: { "multi-filter-target": "checkbox", label: option_label, action: "change->multi-filter#toggleOption" }
+                                        data: { "multi-filter-target": "checkbox", label: option_label }
 
               label_span = content_tag(:span, option_label, class: "flex-1 text-sm")
               count_badge = content_tag(:span, option_count, class: "badge badge-outline ml-auto")
