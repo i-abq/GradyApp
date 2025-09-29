@@ -160,6 +160,25 @@ export default class extends Controller {
     this.summaryTarget.textContent = summary
   }
 
+  clear() {
+    let mutated = false
+
+    this.checkboxTargets.forEach((checkbox) => {
+      if (checkbox.checked) {
+        checkbox.checked = false
+        mutated = true
+      }
+    })
+
+    if (mutated) {
+      this.pendingChanges = true
+      this.syncHiddenInputs()
+      this.updateSummary()
+      this.submitForm()
+      this.pendingChanges = false
+    }
+  }
+
   submitForm() {
     const form = this.element.closest("form")
     if (!form) return

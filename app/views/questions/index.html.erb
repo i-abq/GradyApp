@@ -24,6 +24,10 @@
                 ) %>
             <%= single_filter_dropdown(form, :area, label: "Área", options: @area_options, current_value: @filters[:area], all_label: "Todas") %>
             <%= single_filter_dropdown(form, :theme, label: "Tema", options: @theme_options, current_value: @filters[:theme], all_label: "Todos") %>
+            <%= link_to questions_path, class: "btn btn-ghost btn-sm gap-2" do %>
+              Limpar filtros
+              <%= image_tag "icons/x-icon.svg", alt: "", class: "h-3 w-3" %>
+            <% end %>
           </div>
         </div>
         <div class="text-xs text-muted-foreground">

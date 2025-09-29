@@ -169,7 +169,7 @@ module QuestionsHelper
                                         }
 
               label_span = content_tag(:span, option_label, class: "flex-1 text-sm")
-              count_badge = content_tag(:span, option_count, class: "badge badge-outline ml-auto")
+              count_badge = content_tag(:span, option_count, class: "ml-auto rounded-md px-2 py-0.5 text-xs font-medium text-muted-foreground")
 
               safe_join([checkbox, label_span, count_badge])
             end
@@ -177,13 +177,18 @@ module QuestionsHelper
         )
       end
 
+      clear_button = button_tag "Limpar filtros",
+                                type: :button,
+                                class: "btn btn-ghost btn-sm w-full justify-center text-xs text-muted-foreground",
+                                data: { action: "multi-filter#clear" }
+
       panel = content_tag(:div,
                           class: "absolute left-0 z-30 mt-2 w-64 rounded-md border border-border bg-popover p-3 shadow-sm hidden",
                           id: panel_id,
                           role: "dialog",
                           aria: { labelledby: trigger_id, modal: "false" },
                           data: { "multi-filter-target": "panel" }) do
-        safe_join([search_input, options_list])
+        safe_join([search_input, options_list, clear_button])
       end
 
       safe_join([hidden_inputs, trigger_button, panel])
