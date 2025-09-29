@@ -1,8 +1,8 @@
 <div class="space-y-8">
   <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
     <div class="w-full flex-1">
-      <%= form_with url: questions_path, method: :get, local: true, html: { class: "flex flex-col gap-4 rounded-lg border border-border bg-card p-4", data: { controller: "filters", filters_delay_value: 200 } } do |form| %>
-        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+      <%= form_with url: questions_path, method: :get, local: true, html: { class: "flex flex-col gap-4 rounded-lg bg-card p-4", data: { controller: "filters", filters_delay_value: 200 } } do |form| %>
+        <div class="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
           <div class="relative w-full md:max-w-sm lg:max-w-md">
             <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted-foreground">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
@@ -22,16 +22,29 @@
                   counts: @difficulty_counts,
                   all_label: "Todas"
                 ) %>
-            <%= single_filter_dropdown(form, :area, label: "Área", options: @area_options, current_value: @filters[:area], all_label: "Todas") %>
-            <%= single_filter_dropdown(form, :theme, label: "Tema", options: @theme_options, current_value: @filters[:theme], all_label: "Todos") %>
+            <%= multi_filter_dropdown(
+                  form,
+                  param: :area,
+                  label: "Área",
+                  options: @area_options,
+                  selected_values: @filters[:area],
+                  counts: @area_counts,
+                  all_label: "Todas"
+                ) %>
+            <%= multi_filter_dropdown(
+                  form,
+                  param: :theme,
+                  label: "Tema",
+                  options: @theme_options,
+                  selected_values: @filters[:theme],
+                  counts: @theme_counts,
+                  all_label: "Todos"
+                ) %>
             <%= link_to questions_path, class: "btn btn-ghost btn-sm gap-2" do %>
               Limpar filtros
               <%= image_tag "icons/x-icon.svg", alt: "", class: "h-3 w-3" %>
             <% end %>
           </div>
-        </div>
-        <div class="text-xs text-muted-foreground">
-          <%= pluralize(@questions.size, "questão", "questões") %> encontradas
         </div>
       <% end %>
     </div>

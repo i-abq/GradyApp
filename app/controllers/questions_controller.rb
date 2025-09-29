@@ -14,8 +14,8 @@ class QuestionsController < ApplicationController
     @filters = {
       q: params[:q].to_s.strip,
       difficulty: Array(params[:difficulty]).flatten.map(&:presence).compact,
-      area: params[:area].presence,
-      theme: params[:theme].presence
+      area: Array(params[:area]).flatten.map(&:presence).compact,
+      theme: Array(params[:theme]).flatten.map(&:presence).compact
     }
 
     @questions = filter_questions
@@ -23,6 +23,8 @@ class QuestionsController < ApplicationController
     @area_options = area_options
     @theme_options = theme_options
     @difficulty_counts = difficulty_counts
+    @area_counts = area_counts
+    @theme_counts = theme_counts
   end
 
   private
@@ -30,14 +32,14 @@ class QuestionsController < ApplicationController
   def filter_questions
     query = @filters[:q].presence
     selected_difficulties = Array(@filters[:difficulty])
-    area = @filters[:area]
-    theme = @filters[:theme]
+    selected_areas = Array(@filters[:area])
+    selected_themes = Array(@filters[:theme])
 
     SAMPLE_QUESTIONS.select do |question|
       matches_query = query.nil? || question[:title].downcase.include?(query.downcase)
       matches_difficulty = selected_difficulties.blank? || selected_difficulties.include?(question[:difficulty])
-      matches_area = area.nil? || question[:area] == area
-      matches_theme = theme.nil? || question[:theme] == theme
+      matches_area = selected_areas.blank? || selected_areas.include?(question[:area])
+      matches_theme = selected_themes.blank? || selected_themes.include?(question[:theme])
 
       matches_query && matches_difficulty && matches_area && matches_theme
     end
@@ -57,19 +59,57 @@ class QuestionsController < ApplicationController
 
   def difficulty_counts
     query = @filters[:q].presence&.downcase
-    area = @filters[:area]
-    theme = @filters[:theme]
+    areas = Array(@filters[:area])
+    themes = Array(@filters[:theme])
 
     counts = SAMPLE_QUESTIONS.each_with_object(Hash.new(0)) do |question, acc|
       next if query.present? && !question[:title].downcase.include?(query)
-      next if area.present? && question[:area] != area
-      next if theme.present? && question[:theme] != theme
+      next if areas.present? && !areas.include?(question[:area])
+      next if themes.present? && !themes.include?(question[:theme])
 
       acc[question[:difficulty]] += 1
     end
 
     QuestionsHelper::DIFFICULTY_LABELS.keys.each_with_object({}) do |difficulty, acc|
       acc[difficulty] = counts[difficulty] || 0
+    end
+  end
+
+  def area_counts
+    query = @filters[:q].presence&.downcase
+    difficulties = Array(@filters[:difficulty])
+    themes = Array(@filters[:theme])
+
+    counts = SAMPLE_QUESTIONS.each_with_object(Hash.new(0)) do |question, acc|
+      next if query.present? && !question[:title].downcase.include?(query)
+      next if difficulties.present? && !difficulties.include?(question[:difficulty])
+      next if themes.present? && !themes.include?(question[:theme])
+
+      acc[question[:area]] += 1
+    end
+
+    area_values = area_options.map { |_, value| value }
+    area_values.each_with_object({}) do |area, acc|
+      acc[area] = counts[area] || 0
+    end
+  end
+
+  def theme_counts
+    query = @filters[:q].presence&.downcase
+    difficulties = Array(@filters[:difficulty])
+    areas = Array(@filters[:area])
+
+    counts = SAMPLE_QUESTIONS.each_with_object(Hash.new(0)) do |question, acc|
+      next if query.present? && !question[:title].downcase.include?(query)
+      next if difficulties.present? && !difficulties.include?(question[:difficulty])
+      next if areas.present? && !areas.include?(question[:area])
+
+      acc[question[:theme]] += 1
+    end
+
+    theme_values = theme_options.map { |_, value| value }
+    theme_values.each_with_object({}) do |theme, acc|
+      acc[theme] = counts[theme] || 0
     end
   end
 end
