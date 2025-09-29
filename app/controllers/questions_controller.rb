@@ -18,7 +18,15 @@ class QuestionsController < ApplicationController
       theme: Array(params[:theme]).flatten.map(&:presence).compact
     }
 
-    @questions = filter_questions
+    filtered_questions = filter_questions
+
+    @per_page = 25
+    @page = params[:page].to_i
+    @page = 1 if @page < 1
+    @total_pages = [(filtered_questions.size / @per_page.to_f).ceil, 1].max
+    @page = @total_pages if @page > @total_pages
+    offset = (@page - 1) * @per_page
+    @questions = filtered_questions.slice(offset, @per_page) || []
     @difficulty_options = difficulty_options
     @area_options = area_options
     @theme_options = theme_options

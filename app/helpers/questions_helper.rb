@@ -212,4 +212,26 @@ module QuestionsHelper
       ])
     end
   end
+
+  def pagination_button(page:, icon:, label:, disabled: false)
+    classes = tw("btn btn-outline btn-sm h-9 w-9 p-0", ("pointer-events-none opacity-50" if disabled))
+    icon_tag = image_tag(icon, alt: "", class: "h-4 w-4", aria: { hidden: true })
+    inner = safe_join([icon_tag, content_tag(:span, label, class: "sr-only")])
+
+    if disabled
+      content_tag(:span, inner, class: classes, role: "button", aria: { label: label, disabled: "true" })
+    else
+      link_to inner, questions_path(pagination_query_params(page)), class: classes, aria: { label: label }
+    end
+  end
+
+  def pagination_query_params(page)
+    {
+      q: @filters[:q].presence,
+      difficulty: @filters[:difficulty].presence,
+      area: @filters[:area].presence,
+      theme: @filters[:theme].presence,
+      page: page
+    }.compact_blank
+  end
 end
