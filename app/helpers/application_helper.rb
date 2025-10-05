@@ -1,6 +1,8 @@
 module ApplicationHelper
+  include ComponentsHelper
+
   def pagination_button(path_helper:, params:, page:, icon:, label:, disabled: false)
-    classes = ComponentsHelper.tw("btn btn-outline btn-sm h-9 w-9 p-0", ("pointer-events-none opacity-50" if disabled))
+    classes = tw("btn btn-outline btn-sm h-9 w-9 p-0", ("pointer-events-none opacity-50" if disabled))
     icon_tag = image_tag(icon, alt: "", class: "h-4 w-4", aria: { hidden: true })
     inner = safe_join([icon_tag, content_tag(:span, label, class: "sr-only")])
 

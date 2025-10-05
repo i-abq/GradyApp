@@ -2,7 +2,7 @@ require "tailwind_merge"
 
 module ComponentsHelper
   def tw(*classes)
-    TailwindMerge::Merger.new.merge(classes.join(" "))
+    TailwindMerge::Merger.new.merge(classes.compact.join(" "))
   end
 
   PRIMARY_CLASSES = "btn-primary"
