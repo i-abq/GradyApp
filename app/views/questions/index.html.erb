@@ -48,7 +48,7 @@
             </div>
           </div>
           <div class="flex items-center gap-2 md:ml-auto">
-            <%= button_tag "Configurar Prova", class: "btn btn-secondary btn-sm", type: :button %>
+            <%= link_to "Configurar Prova", questions_blueprints_path, class: "btn btn-secondary btn-sm" %>
             <%= button_tag "Adicionar questão", class: "btn btn-primary btn-sm", type: :button %>
           </div>
         </div>
@@ -92,13 +92,14 @@
           </tbody>
         </table>
       </div>
+      <% pagination_params = pagination_base_params(@filters) %>
       <div class="mt-4 flex flex-col gap-3 rounded-lg border border-border bg-card px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
         <span class="text-sm text-muted-foreground">Página <%= @page %> de <%= @total_pages %></span>
         <div class="flex items-center gap-2">
-          <%= pagination_button(page: 1, icon: "icons/chevrons-left-icon.svg", label: "Primeira página", disabled: @page <= 1) %>
-          <%= pagination_button(page: (@page - 1).clamp(1, @total_pages), icon: "icons/chevron-left-icon.svg", label: "Página anterior", disabled: @page <= 1) %>
-          <%= pagination_button(page: (@page + 1).clamp(1, @total_pages), icon: "icons/chevron-right-icon.svg", label: "Próxima página", disabled: @page >= @total_pages) %>
-          <%= pagination_button(page: @total_pages, icon: "icons/chevrons-right-icon.svg", label: "Última página", disabled: @page >= @total_pages) %>
+          <%= pagination_button(path_helper: method(:questions_path), params: pagination_params, page: 1, icon: "icons/chevrons-left-icon.svg", label: "Primeira página", disabled: @page <= 1) %>
+          <%= pagination_button(path_helper: method(:questions_path), params: pagination_params, page: (@page - 1).clamp(1, @total_pages), icon: "icons/chevron-left-icon.svg", label: "Página anterior", disabled: @page <= 1) %>
+          <%= pagination_button(path_helper: method(:questions_path), params: pagination_params, page: (@page + 1).clamp(1, @total_pages), icon: "icons/chevron-right-icon.svg", label: "Próxima página", disabled: @page >= @total_pages) %>
+          <%= pagination_button(path_helper: method(:questions_path), params: pagination_params, page: @total_pages, icon: "icons/chevrons-right-icon.svg", label: "Última página", disabled: @page >= @total_pages) %>
         </div>
       </div>
     </div>

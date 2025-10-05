@@ -1,0 +1,61 @@
+<div class="space-y-8">
+  <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <%= form_with url: questions_blueprints_path, method: :get, local: true, html: { class: "flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between", data: { controller: "filters", filters_delay_value: 200 } } do |form| %>
+      <div class="relative w-full md:max-w-sm lg:max-w-md">
+        <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted-foreground">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-3.5-3.5" />
+          </svg>
+        </span>
+        <%= form.text_field :q, value: @filters[:q], placeholder: "Buscar por título", class: "input pl-9", data: { action: "input->filters#submit" } %>
+      </div>
+    <% end %>
+
+    <div class="flex items-center gap-2 md:ml-auto">
+      <%= button_tag "Adicionar regra", class: "btn btn-primary btn-sm", type: :button %>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto">
+    <div class="min-w-full lg:min-w-[720px]">
+      <div class="<%= table_container_class %>">
+        <table class="w-full border-collapse text-sm text-foreground">
+          <thead class="bg-muted/40 text-xs uppercase tracking-wide text-foreground">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left font-semibold">ID</th>
+              <th scope="col" class="px-6 py-3 text-left font-semibold">Título</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border">
+            <% if @blueprints.any? %>
+              <% @blueprints.each do |blueprint| %>
+                <tr class="transition-colors hover:bg-muted/30">
+                  <td class="px-6 py-4 font-medium"><%= blueprint[:id] %></td>
+                  <td class="px-6 py-4"><%= blueprint[:title] %></td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr>
+                <td colspan="2" class="px-6 py-10 text-center text-sm text-muted-foreground">
+                  Nenhuma regra encontrada.
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <% pagination_params = pagination_base_params(@filters) %>
+      <div class="mt-4 flex flex-col gap-3 rounded-lg border border-border bg-card px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <span class="text-sm text-muted-foreground">Página <%= @page %> de <%= @total_pages %></span>
+        <div class="flex items-center gap-2">
+          <%= pagination_button(path_helper: method(:questions_blueprints_path), params: pagination_params, page: 1, icon: "icons/chevrons-left-icon.svg", label: "Primeira página", disabled: @page <= 1) %>
+          <%= pagination_button(path_helper: method(:questions_blueprints_path), params: pagination_params, page: (@page - 1).clamp(1, @total_pages), icon: "icons/chevron-left-icon.svg", label: "Página anterior", disabled: @page <= 1) %>
+          <%= pagination_button(path_helper: method(:questions_blueprints_path), params: pagination_params, page: (@page + 1).clamp(1, @total_pages), icon: "icons/chevron-right-icon.svg", label: "Próxima página", disabled: @page >= @total_pages) %>
+          <%= pagination_button(path_helper: method(:questions_blueprints_path), params: pagination_params, page: @total_pages, icon: "icons/chevrons-right-icon.svg", label: "Última página", disabled: @page >= @total_pages) %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
