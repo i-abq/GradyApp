@@ -209,7 +209,4 @@ module QuestionsHelper
       ])
     end
   end
-
-
-  end
 end
