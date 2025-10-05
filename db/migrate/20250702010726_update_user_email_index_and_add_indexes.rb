@@ -6,7 +6,7 @@ class UpdateUserEmailIndexAndAddIndexes < ActiveRecord::Migration[7.1]
     end
     
     # Adicionar índice único case-insensitive para email (se não existir)
-    unless index_exists?(:users, 'LOWER(email)', unique: true)
+    unless index_name_exists?(:users, 'index_users_on_lower_email', false)
       add_index :users, 'LOWER(email)', unique: true, name: 'index_users_on_lower_email'
     end
     
@@ -22,7 +22,7 @@ class UpdateUserEmailIndexAndAddIndexes < ActiveRecord::Migration[7.1]
       remove_index :users, :disabled_at
     end
     
-    if index_exists?(:users, 'LOWER(email)', unique: true)
+    if index_name_exists?(:users, 'index_users_on_lower_email', false)
       remove_index :users, name: 'index_users_on_lower_email'
     end
     
