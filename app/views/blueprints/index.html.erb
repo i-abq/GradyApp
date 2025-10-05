@@ -2,7 +2,7 @@
   <h1>Regras de prova</h1>
   <p>Gerencie as regras de prova de acordo com os seus editais.</p>
   <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-    <%= form_with url: questions_blueprints_path, method: :get, local: true, html: { class: "flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between", data: { controller: "filters", filters_delay_value: 500 } } do |form| %>
+    <%= form_with url: blueprints_path, method: :get, local: true, html: { class: "flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between", data: { controller: "filters", filters_delay_value: 500 } } do |form| %>
       <div class="relative w-full md:max-w-sm lg:max-w-md">
         <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted-foreground">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
@@ -15,7 +15,7 @@
     <% end %>
 
     <div class="flex items-center gap-2 md:ml-auto">
-      <%= link_to "Adicionar regra", new_questions_blueprint_path, class: "btn btn-primary btn-sm" %>
+      <%= link_to "Adicionar regra", new_blueprint_path, class: "btn btn-primary btn-sm" %>
     </div>
   </div>
 
@@ -39,7 +39,7 @@
                     <% if blueprint.published? %>
                       <span class="font-semibold"><%= blueprint.title %></span>
                     <% else %>
-                      <%= link_to blueprint.title.presence || "(sem título)", edit_questions_blueprint_path(blueprint), class: "font-semibold text-primary hover:underline" %>
+                      <%= link_to blueprint.title.presence || "(sem título)", edit_blueprint_path(blueprint), class: "font-semibold text-primary hover:underline" %>
                     <% end %>
                     <div class="text-xs text-muted-foreground">Modalidade <%= blueprint.modality %> · Ano <%= blueprint.year %> · Versão <%= blueprint.version %></div>
                   </td>
@@ -63,10 +63,10 @@
       <div class="mt-4 flex flex-col gap-3 rounded-lg border border-border bg-card px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
         <span class="text-sm text-muted-foreground">Página <%= @page %> de <%= @total_pages %></span>
         <div class="flex items-center gap-2">
-          <%= pagination_button(path_helper: method(:questions_blueprints_path), params: pagination_params, page: 1, icon: "icons/chevrons-left-icon.svg", label: "Primeira página", disabled: @page <= 1) %>
-          <%= pagination_button(path_helper: method(:questions_blueprints_path), params: pagination_params, page: (@page - 1).clamp(1, @total_pages), icon: "icons/chevron-left-icon.svg", label: "Página anterior", disabled: @page <= 1) %>
-          <%= pagination_button(path_helper: method(:questions_blueprints_path), params: pagination_params, page: (@page + 1).clamp(1, @total_pages), icon: "icons/chevron-right-icon.svg", label: "Próxima página", disabled: @page >= @total_pages) %>
-          <%= pagination_button(path_helper: method(:questions_blueprints_path), params: pagination_params, page: @total_pages, icon: "icons/chevrons-right-icon.svg", label: "Última página", disabled: @page >= @total_pages) %>
+          <%= pagination_button(path_helper: method(:blueprints_path), params: pagination_params, page: 1, icon: "icons/chevrons-left-icon.svg", label: "Primeira página", disabled: @page <= 1) %>
+          <%= pagination_button(path_helper: method(:blueprints_path), params: pagination_params, page: (@page - 1).clamp(1, @total_pages), icon: "icons/chevron-left-icon.svg", label: "Página anterior", disabled: @page <= 1) %>
+          <%= pagination_button(path_helper: method(:blueprints_path), params: pagination_params, page: (@page + 1).clamp(1, @total_pages), icon: "icons/chevron-right-icon.svg", label: "Próxima página", disabled: @page >= @total_pages) %>
+          <%= pagination_button(path_helper: method(:blueprints_path), params: pagination_params, page: @total_pages, icon: "icons/chevrons-right-icon.svg", label: "Última página", disabled: @page >= @total_pages) %>
         </div>
       </div>
     </div>

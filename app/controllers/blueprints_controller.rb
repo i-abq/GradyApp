@@ -35,7 +35,7 @@ class BlueprintsController < ApplicationController
     @blueprint.created_by = current_user
 
     if @blueprint.save
-      redirect_to edit_questions_blueprint_path(@blueprint), notice: "Blueprint criada com sucesso."
+    redirect_to edit_blueprint_path(@blueprint), notice: "Blueprint criada com sucesso."
     else
       set_form_options
       build_default_structure(@blueprint) if @blueprint.areas.empty?
@@ -45,7 +45,7 @@ class BlueprintsController < ApplicationController
 
   def edit
     if @blueprint.published?
-      redirect_to questions_blueprints_path, alert: "A blueprint publicada não pode ser editada." and return
+      redirect_to blueprints_path, alert: "A blueprint publicada não pode ser editada." and return
     end
 
     build_default_structure(@blueprint) if @blueprint.areas.empty?
@@ -53,11 +53,11 @@ class BlueprintsController < ApplicationController
 
   def update
     if @blueprint.published?
-      redirect_to questions_blueprints_path, alert: "A blueprint publicada não pode ser editada." and return
+      redirect_to blueprints_path, alert: "A blueprint publicada não pode ser editada." and return
     end
 
     if @blueprint.update(blueprint_params)
-      redirect_to edit_questions_blueprint_path(@blueprint), notice: "Blueprint atualizada com sucesso."
+      redirect_to edit_blueprint_path(@blueprint), notice: "Blueprint atualizada com sucesso."
     else
       set_form_options
       render :edit, status: :unprocessable_entity
@@ -67,26 +67,26 @@ class BlueprintsController < ApplicationController
   def publish
     begin
       @blueprint.publish!
-      redirect_to questions_blueprints_path, notice: "Blueprint publicada com sucesso."
+      redirect_to blueprints_path, notice: "Blueprint publicada com sucesso."
     rescue ActiveRecord::RecordInvalid => e
-      redirect_to edit_questions_blueprint_path(@blueprint), alert: e.record.errors.full_messages.to_sentence
+      redirect_to edit_blueprint_path(@blueprint), alert: e.record.errors.full_messages.to_sentence
     end
   end
 
   def retire
     if @blueprint.published?
       @blueprint.retire!
-      redirect_to questions_blueprints_path, notice: "Blueprint retirada com sucesso."
+      redirect_to blueprints_path, notice: "Blueprint retirada com sucesso."
     else
-      redirect_to questions_blueprints_path, alert: "Apenas blueprints publicadas podem ser retiradas."
+      redirect_to blueprints_path, alert: "Apenas blueprints publicadas podem ser retiradas."
     end
   end
 
   def duplicate
     dup = @blueprint.duplicate!(current_user)
-    redirect_to edit_questions_blueprint_path(dup), notice: "Blueprint duplicada como rascunho."
+    redirect_to edit_blueprint_path(dup), notice: "Blueprint duplicada como rascunho."
   rescue ActiveRecord::RecordInvalid => e
-    redirect_to edit_questions_blueprint_path(@blueprint), alert: e.record.errors.full_messages.to_sentence
+    redirect_to edit_blueprint_path(@blueprint), alert: e.record.errors.full_messages.to_sentence
   end
 
   private
