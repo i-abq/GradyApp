@@ -15,7 +15,7 @@
     <% end %>
 
     <div class="flex items-center gap-2 md:ml-auto">
-      <%= button_tag "Adicionar regra", class: "btn btn-primary btn-sm", type: :button %>
+      <%= link_to "Adicionar regra", new_questions_blueprint_path, class: "btn btn-primary btn-sm" %>
     </div>
   </div>
 
@@ -27,19 +27,30 @@
             <tr>
               <th scope="col" class="px-6 py-3 text-left font-semibold">ID</th>
               <th scope="col" class="px-6 py-3 text-left font-semibold">Título</th>
+              <th scope="col" class="px-6 py-3 text-left font-semibold">Status</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-border">
             <% if @blueprints.any? %>
               <% @blueprints.each do |blueprint| %>
                 <tr class="transition-colors hover:bg-muted/30">
-                  <td class="px-6 py-4 font-medium"><%= blueprint[:id] %></td>
-                  <td class="px-6 py-4"><%= blueprint[:title] %></td>
+                  <td class="px-6 py-4 font-medium"><%= blueprint.id %></td>
+                  <td class="px-6 py-4">
+                    <% if blueprint.published? %>
+                      <span class="font-semibold"><%= blueprint.title %></span>
+                    <% else %>
+                      <%= link_to blueprint.title.presence || "(sem título)", edit_questions_blueprint_path(blueprint), class: "font-semibold text-primary hover:underline" %>
+                    <% end %>
+                    <div class="text-xs text-muted-foreground">Modalidade <%= blueprint.modality %> · Ano <%= blueprint.year %> · Versão <%= blueprint.version %></div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center rounded-full border border-border px-2 py-0.5 text-xs font-medium"><%= blueprint.status.humanize %></span>
+                  </td>
                 </tr>
               <% end %>
             <% else %>
               <tr>
-                <td colspan="2" class="px-6 py-10 text-center text-sm text-muted-foreground">
+                <td colspan="3" class="px-6 py-10 text-center text-sm text-muted-foreground">
                   Nenhuma regra encontrada.
                 </td>
               </tr>
@@ -61,14 +72,3 @@
     </div>
   </div>
 </div>
-
-<style>
-  
-  .space-y-8 h1 {
-    color: #172a3a;
-    font-size: 2rem;
-    font-weight: 700;
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-  }
-</style>

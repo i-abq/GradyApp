@@ -1,0 +1,12 @@
+<% content_for :page_title, "Nova blueprint" %>
+
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold">Nova blueprint</h1>
+      <p class="text-sm text-muted-foreground">Configure regras por modalidade e ano.</p>
+    </div>
+  </div>
+
+  <%= render "form", form_url: questions_blueprints_path, form_method: :post %>
+</div>

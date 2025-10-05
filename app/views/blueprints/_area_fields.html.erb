@@ -1,0 +1,36 @@
+<% area = f.object %>
+<% new_record = area.new_record? %>
+<% component_template = capture do %>
+  <%= f.fields_for(:components, BlueprintComponent.new(component_type: BlueprintComponent::COMPONENT_TYPES.first), child_index: "#{f.options[:child_index]}_NEW_COMPONENT") do |component_fields| %>
+    <%= render "component_fields", f: component_fields %>
+  <% end %>
+<% end %>
+
+<div class="space-y-4 rounded-lg border border-border bg-card/60 p-4" data-blueprint-form-target="area" data-area-index="<%= f.options[:child_index] %>" data-new-record="<%= new_record %>">
+  <%= f.hidden_field :_destroy, value: 0, data: { blueprint_form_target: "areaDestroy" } %>
+  <%= f.hidden_field :position, value: area.position || 0, data: { blueprint_form_target: "areaPosition" } %>
+
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <h3 class="text-base font-semibold">Área</h3>
+      <%= f.select :area, @area_options, {}, class: "select" %>
+    </div>
+    <button type="button" class="btn btn-ghost btn-sm text-destructive" data-action="blueprint-form#removeArea">
+      Remover área
+    </button>
+  </div>
+
+  <div class="space-y-3" data-blueprint-form-target="components">
+    <%= f.fields_for :components do |component_fields| %>
+      <%= render "component_fields", f: component_fields %>
+    <% end %>
+  </div>
+
+  <template data-component-template><%= component_template %></template>
+
+  <div class="flex justify-end">
+    <button type="button" class="btn btn-outline btn-sm" data-action="blueprint-form#addComponent">
+      Adicionar componente
+    </button>
+  </div>
+</div>

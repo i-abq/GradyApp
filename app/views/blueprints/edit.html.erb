@@ -1,0 +1,12 @@
+<% content_for :page_title, "Editar blueprint" %>
+
+<div class="space-y-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold">Editar blueprint</h1>
+      <p class="text-sm text-muted-foreground">Modifique o rascunho e publique quando estiver pronto.</p>
+    </div>
+  </div>
+
+  <%= render "form", form_url: questions_blueprint_path(@blueprint), form_method: :patch %>
+</div>

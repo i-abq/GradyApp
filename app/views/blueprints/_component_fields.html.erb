@@ -1,0 +1,43 @@
+<% component = f.object %>
+<% new_record = component.new_record? %>
+<div class="space-y-3 rounded-lg border border-border bg-card/30 p-4" data-blueprint-form-target="component" data-new-record="<%= new_record %>">
+  <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+    <%= f.hidden_field :_destroy, value: 0, data: { blueprint_form_target: "componentDestroy" } %>
+    <%= f.hidden_field :position, value: component.position || 0, data: { blueprint_form_target: "componentPosition" } %>
+
+    <div class="sm:col-span-2">
+      <%= f.label :title, "Título", class: "text-sm font-medium text-muted-foreground" %>
+      <%= f.text_field :title, class: "input mt-1", placeholder: "Ex.: Tema 1" %>
+    </div>
+
+    <div>
+      <%= f.label :component_type, "Tipo", class: "text-sm font-medium text-muted-foreground" %>
+      <%= f.select :component_type, @component_type_options, {}, class: "select mt-1" %>
+    </div>
+
+    <div>
+      <%= f.label :num_items, "Qtd. itens", class: "text-sm font-medium text-muted-foreground" %>
+      <%= f.number_field :num_items, class: "input mt-1", min: 0, step: 1, data: { action: "input->blueprint-form#recalculate" } %>
+    </div>
+
+    <div>
+      <%= f.label :maximum_score, "Pontuação máx.", class: "text-sm font-medium text-muted-foreground" %>
+      <%= f.number_field :maximum_score, class: "input mt-1", min: 0, step: 0.1, data: { action: "input->blueprint-form#recalculate" } %>
+    </div>
+
+    <div class="flex flex-col justify-end">
+      <span class="text-xs text-muted-foreground">Pts / item</span>
+      <span class="text-sm font-semibold" data-blueprint-form-target="pointsPerItem"><%= number_with_precision(component.points_per_item, precision: 3) %></span>
+    </div>
+  </div>
+
+  <div class="flex justify-between">
+    <div>
+      <%= f.label :slug, "Slug (opcional)", class: "text-sm font-medium text-muted-foreground" %>
+      <%= f.text_field :slug, class: "input mt-1 w-48" %>
+    </div>
+    <button type="button" class="btn btn-ghost btn-sm text-destructive" data-action="blueprint-form#removeComponent">
+      Remover componente
+    </button>
+  </div>
+</div>
