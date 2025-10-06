@@ -17,7 +17,7 @@
                 "blueprint-allocation-target-questions-value": blueprint.target_questions_per_area,
                 "blueprint-allocation-target-points-value": blueprint.target_points_per_area.to_f
               },
-              class: "space-y-6" do |form| %>
+              class: "space-y-6 blueprint-wizard" do |form| %>
   <%= hidden_field_tag :current_step, current_step, data: { wizard_target: "currentStepField" } %>
 
   <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -50,7 +50,7 @@
       <nav class="grid gap-2 text-sm font-medium sm:grid-cols-4">
         <% steps.each_with_index do |step, index| %>
           <button type="button"
-                  class="flex flex-col rounded-md border border-transparent bg-muted px-4 py-3 text-left transition-colors hover:border-primary"
+                  class="flex flex-col rounded-md border border-transparent bg-muted px-4 py-3 text-left transition-colors hover:border-slate-300 hover:bg-slate-200"
                   data-wizard-target="indicator"
                   data-wizard-step-value="<%= index + 1 %>"
                   data-action="wizard#go">
@@ -306,3 +306,26 @@
     </div>
   </div>
 <% end %>
+
+<style>
+  .blueprint-wizard [data-wizard-target="indicator"][data-state="active"] span {
+    color: #ffffff !important;
+  }
+
+  .blueprint-wizard [data-wizard-target="indicator"]:not([data-state="active"]):hover {
+    background-color: #e5e7eb;
+    border-color: #9ca3af;
+    color: #1f2937;
+  }
+
+  .blueprint-wizard [data-wizard-target="indicator"]:not([data-state="active"]):hover span {
+    color: #1f2937 !important;
+  }
+
+  .blueprint-wizard .btn:hover,
+  .blueprint-wizard .btn:focus-visible {
+    background-color: #e5e7eb !important;
+    border-color: #9ca3af !important;
+    color: #1f2937 !important;
+  }
+</style>
