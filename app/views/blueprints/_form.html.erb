@@ -1,0 +1,308 @@
+<% blueprint = local_assigns.fetch(:blueprint) %>
+<% url = local_assigns.fetch(:url) %>
+<% http_method = local_assigns.fetch(:method, :post) %>
+<% title = local_assigns.fetch(:title, blueprint.persisted? ? "Editar blueprint" : "Adicionar regra") %>
+<% subtitle = local_assigns.fetch(:subtitle, "Configure a distribuição de questões e pontos por área.") %>
+<% current_step = local_assigns.fetch(:current_step, @current_step || 1) %>
+<% grouped_rules = blueprint.rules.sort_by { |rule| [rule.area, rule.component] }.group_by(&:area) %>
+<% area_totals = blueprint.area_totals %>
+<% read_only = blueprint.status_published? %>
+
+<%= form_with model: blueprint,
+              url: url,
+              method: http_method,
+              data: {
+                controller: "wizard blueprint-allocation",
+                "wizard-current-value": current_step,
+                "blueprint-allocation-target-questions-value": blueprint.target_questions_per_area,
+                "blueprint-allocation-target-points-value": blueprint.target_points_per_area.to_f
+              },
+              class: "space-y-6" do |form| %>
+  <%= hidden_field_tag :current_step, current_step, data: { wizard_target: "currentStepField" } %>
+
+  <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold text-foreground"><%= title %></h1>
+      <p class="text-sm text-muted-foreground"><%= subtitle %></p>
+    </div>
+    <%= link_to "Voltar", questions_blueprints_path, class: "btn btn-ghost btn-sm" %>
+  </div>
+
+  <% if blueprint.errors.any? %>
+    <div class="rounded-md border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
+      <p class="font-semibold">Não foi possível salvar o blueprint.</p>
+      <ul class="mt-2 list-disc space-y-1 pl-5">
+        <% blueprint.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="rounded-lg border border-border bg-card shadow-sm">
+    <div class="border-b border-border bg-muted/40 p-4">
+      <% steps = [
+           { label: "Identificação", description: "Dados básicos" },
+           { label: "Alocação", description: "Questões por área" },
+           { label: "Validação", description: "Totais e deltas" },
+           { label: "Publicação", description: "Revisão final" }
+         ] %>
+      <nav class="grid gap-2 text-sm font-medium sm:grid-cols-4">
+        <% steps.each_with_index do |step, index| %>
+          <button type="button"
+                  class="flex flex-col rounded-md border border-transparent bg-muted px-4 py-3 text-left transition-colors hover:border-primary"
+                  data-wizard-target="indicator"
+                  data-wizard-step-value="<%= index + 1 %>"
+                  data-action="wizard#go">
+            <span class="text-xs uppercase text-muted-foreground"><%= "Etapa #{index + 1}" %></span>
+            <span class="font-semibold text-foreground"><%= step[:label] %></span>
+            <span class="text-xs text-muted-foreground"><%= step[:description] %></span>
+          </button>
+        <% end %>
+      </nav>
+    </div>
+
+    <div class="space-y-10 p-6">
+      <section class="space-y-6" data-wizard-target="step">
+        <header class="space-y-1">
+          <h2 class="text-xl font-semibold text-foreground">Identificação</h2>
+          <p class="text-sm text-muted-foreground">Defina os dados do edital e as metas por área.</p>
+        </header>
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="space-y-2">
+            <%= form.label :year, "Ano/edição", class: "text-sm font-medium text-foreground" %>
+            <%= form.number_field :year, class: "input", min: 2000, disabled: read_only %>
+          </div>
+          <div class="space-y-2">
+            <%= form.label :modality, "Modalidade", class: "text-sm font-medium text-foreground" %>
+            <%= form.select :modality,
+                             Blueprint::MODALITIES.map { |value, label| [label, value] },
+                             {},
+                             class: "select",
+                             disabled: read_only %>
+          </div>
+          <div class="space-y-2 md:col-span-2">
+            <%= form.label :name, "Nome interno", class: "text-sm font-medium text-foreground" %>
+            <%= form.text_field :name, class: "input", disabled: read_only %>
+          </div>
+          <div class="space-y-2">
+            <%= form.label :target_questions_per_area, "Questões por área", class: "text-sm font-medium text-foreground" %>
+            <%= form.number_field :target_questions_per_area,
+                                   class: "input",
+                                   min: 1,
+                                   step: 1,
+                                   disabled: read_only,
+                                   data: (read_only ? {} : { action: "input->blueprint-allocation#updateTargetQuestions" }) %>
+          </div>
+          <div class="space-y-2">
+            <%= form.label :target_points_per_area, "Pontos por área", class: "text-sm font-medium text-foreground" %>
+            <%= form.number_field :target_points_per_area,
+                                   class: "input",
+                                   step: 0.0001,
+                                   min: 0,
+                                   disabled: read_only,
+                                   data: (read_only ? {} : { action: "input->blueprint-allocation#updateTargetPoints" }) %>
+          </div>
+          <div class="space-y-2 md:col-span-2">
+            <%= form.label :observations, "Observações", class: "text-sm font-medium text-foreground" %>
+            <%= form.text_area :observations, class: "textarea", rows: 4, disabled: read_only %>
+          </div>
+        </div>
+      </section>
+
+      <section class="space-y-6 hidden" data-wizard-target="step">
+        <header class="space-y-1">
+          <h2 class="text-xl font-semibold text-foreground">Alocação por área</h2>
+          <p class="text-sm text-muted-foreground">Distribua quantidade de questões e pontuação máxima por componente.</p>
+        </header>
+
+        <div class="space-y-6">
+          <% Blueprint::AREAS.each do |area_key, area_config| %>
+            <% area_rules = grouped_rules[area_key] || [] %>
+            <div class="rounded-lg border border-border">
+              <div class="flex items-center justify-between border-b border-border bg-muted/40 px-4 py-3">
+                <div>
+                  <h3 class="text-lg font-semibold text-foreground"><%= area_config[:label] %></h3>
+                  <p class="text-xs text-muted-foreground">Quantidade alvo: <%= blueprint.target_questions_per_area %> | Pontos alvo: <%= format('%.4f', blueprint.target_points_per_area) %></p>
+                </div>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full min-w-[640px] table-fixed border-collapse text-sm text-foreground">
+                  <thead class="bg-muted/40 text-xs uppercase tracking-wide text-foreground">
+                    <tr>
+                      <th scope="col" class="px-4 py-3 text-left font-semibold">Componente</th>
+                      <th scope="col" class="w-32 px-4 py-3 text-left font-semibold">Qtd</th>
+                      <th scope="col" class="w-40 px-4 py-3 text-left font-semibold">Máx pontos</th>
+                      <th scope="col" class="w-40 px-4 py-3 text-left font-semibold">Pontos/questão</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-border">
+                    <% area_rules.each do |rule| %>
+                      <%= form.fields_for :rules, rule do |rule_fields| %>
+                        <tr class="transition-colors hover:bg-muted/20" data-blueprint-allocation-target="row" data-area="<%= area_key %>" data-component="<%= rule.component %>">
+                          <td class="px-4 py-3 align-middle">
+                            <div class="space-y-1">
+                              <span class="font-medium text-foreground"><%= blueprint.component_label(area_key, rule.component) %></span>
+                              <p class="text-xs text-muted-foreground">Slug: <%= rule.component %></p>
+                            </div>
+                            <%= rule_fields.hidden_field :id %>
+                            <%= rule_fields.hidden_field :area, value: area_key %>
+                            <%= rule_fields.hidden_field :component, value: rule.component %>
+                            <%= rule_fields.hidden_field :rounding_mode, value: rule.rounding_mode || "nearest" %>
+                          </td>
+                          <td class="px-4 py-3 align-middle">
+                            <%= rule_fields.number_field :quantity,
+                                                      class: "input w-24",
+                                                      min: 0,
+                                                      step: 1,
+                                                      disabled: read_only,
+                                                      data: {
+                                                        role: "quantity",
+                                                        action: (read_only ? nil : "input->blueprint-allocation#recalculate")
+                                                      }.compact %>
+                          </td>
+                          <td class="px-4 py-3 align-middle">
+                            <%= rule_fields.number_field :max_points,
+                                                      class: "input w-32",
+                                                      min: 0,
+                                                      step: 0.0001,
+                                                      disabled: read_only,
+                                                      data: {
+                                                        role: "max-points",
+                                                        action: (read_only ? nil : "input->blueprint-allocation#recalculate")
+                                                      }.compact %>
+                          </td>
+                          <td class="px-4 py-3 align-middle">
+                            <span class="font-mono text-xs text-muted-foreground" data-role="points-per-unit"><%= rule.formatted_points_per_unit %></span>
+                          </td>
+                        </tr>
+                      <% end %>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </section>
+
+      <section class="space-y-6 hidden" data-wizard-target="step">
+        <header class="space-y-1">
+          <h2 class="text-xl font-semibold text-foreground">Validação de totais</h2>
+          <p class="text-sm text-muted-foreground">Confira se cada área alcança as metas de quantidade e pontuação.</p>
+        </header>
+        <div class="grid gap-4 md:grid-cols-2">
+          <% Blueprint::AREAS.each do |area_key, area_config| %>
+            <% totals = area_totals[area_key] %>
+            <div class="rounded-lg border border-border bg-neutral-50 p-4" data-blueprint-allocation-target="areaSummary" data-area="<%= area_key %>">
+              <div class="flex items-center justify-between">
+                <h3 class="text-base font-semibold text-foreground"><%= area_config[:label] %></h3>
+                <% valid = totals[:valid_quantity] && totals[:valid_points] %>
+                <span class="rounded-full px-2 py-1 text-xs font-medium <%= valid ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800' %>" data-role="status"><%= valid ? 'OK' : 'Ajustar' %></span>
+              </div>
+              <dl class="mt-4 grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <dt class="text-muted-foreground">Questões totais</dt>
+                  <dd class="font-medium" data-role="total-questions"><%= totals[:total_quantity] %></dd>
+                </div>
+                <div>
+                  <dt class="text-muted-foreground">Meta</dt>
+                  <dd class="font-medium"><%= blueprint.target_questions_per_area %></dd>
+                </div>
+                <div>
+                  <dt class="text-muted-foreground">Δ Questões</dt>
+                  <dd class="font-medium" data-role="delta-questions"><%= totals[:delta_quantity] %></dd>
+                </div>
+                <div>
+                  <dt class="text-muted-foreground">Δ Pontos</dt>
+                  <dd class="font-medium" data-role="delta-points"><%= format('%.4f', totals[:delta_points]) %></dd>
+                </div>
+                <div>
+                  <dt class="text-muted-foreground">Pontos totais</dt>
+                  <dd class="font-medium" data-role="total-points"><%= format('%.4f', totals[:total_points]) %></dd>
+                </div>
+                <div>
+                  <dt class="text-muted-foreground">Meta</dt>
+                  <dd class="font-medium"><%= format('%.4f', blueprint.target_points_per_area) %></dd>
+                </div>
+              </dl>
+            </div>
+          <% end %>
+        </div>
+      </section>
+
+      <section class="space-y-6 hidden" data-wizard-target="step">
+        <header class="space-y-1">
+          <h2 class="text-xl font-semibold text-foreground">Revisão e publicação</h2>
+          <p class="text-sm text-muted-foreground">Confira os ajustes finais antes de salvar ou publicar.</p>
+        </header>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="rounded-lg border border-border bg-muted/30 p-4">
+            <h3 class="text-base font-semibold text-foreground">Resumo</h3>
+            <dl class="mt-3 space-y-2 text-sm">
+              <div class="flex items-center justify-between">
+                <dt class="text-muted-foreground">Ano</dt>
+                <dd class="font-medium"><%= blueprint.year %></dd>
+              </div>
+              <div class="flex items-center justify-between">
+                <dt class="text-muted-foreground">Modalidade</dt>
+                <dd class="font-medium"><%= Blueprint::MODALITIES[blueprint.modality] %></dd>
+              </div>
+              <div class="flex items-center justify-between">
+                <dt class="text-muted-foreground">Versão</dt>
+                <dd class="font-medium"><%= blueprint.version %></dd>
+              </div>
+              <div>
+                <dt class="text-muted-foreground">Observações</dt>
+                <dd class="mt-1 text-sm"><%= blueprint.observations.presence || '—' %></dd>
+              </div>
+            </dl>
+          </div>
+          <div class="rounded-lg border border-border bg-muted/30 p-4">
+            <h3 class="text-base font-semibold text-foreground">Totais por área</h3>
+            <ul class="mt-3 space-y-2 text-sm">
+              <% Blueprint::AREAS.each do |area_key, area_config| %>
+                <% totals = area_totals[area_key] %>
+                <li class="flex flex-col rounded-md border border-border px-3 py-2">
+                  <span class="font-semibold text-foreground"><%= area_config[:label] %></span>
+                  <span class="text-xs text-muted-foreground">Questões: <%= totals[:total_quantity] %> | Pontos: <%= format('%.4f', totals[:total_points]) %></span>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+
+        <% if read_only && blueprint.published_at.present? %>
+          <div class="rounded-md border border-emerald-400 bg-emerald-50 p-4 text-sm text-emerald-900">
+            Publicado em <strong><%= l blueprint.published_at, format: :long %></strong>. Para realizar alterações, duplique o blueprint e gere uma nova versão.
+          </div>
+        <% end %>
+
+        <% if defined?(@publication_issues) && @publication_issues.present? %>
+          <div class="rounded-md border border-amber-400 bg-amber-50 p-4 text-sm text-amber-900">
+            <p class="font-semibold">Ajustes necessários antes da publicação:</p>
+            <ul class="mt-2 list-disc space-y-1 pl-5">
+              <% @publication_issues.each do |issue| %>
+                <li><%= issue %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+      </section>
+    </div>
+
+    <div class="flex flex-col gap-3 border-t border-border bg-muted/30 p-4 sm:flex-row sm:items-center sm:justify-between">
+      <button type="button" class="btn btn-ghost btn-sm" data-wizard-target="previousButton" data-action="wizard#previous">Voltar etapa</button>
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-2">
+        <button type="button" class="btn btn-secondary btn-sm" data-wizard-target="nextButton" data-action="wizard#next">Próxima etapa</button>
+        <% unless read_only %>
+          <div class="hidden items-center gap-2" data-wizard-target="finalActions">
+            <%= button_tag "Salvar rascunho", class: "btn btn-secondary btn-sm", type: :submit %>
+            <%= button_tag "Publicar", class: "btn btn-primary btn-sm", type: :submit, name: :publish, value: 1 %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

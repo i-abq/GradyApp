@@ -3,7 +3,10 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
-  
+ 
+  has_many :authored_blueprints, class_name: "Blueprint", foreign_key: :created_by_id, inverse_of: :creator
+  has_many :blueprint_snapshots, class_name: "BlueprintSnapshot", foreign_key: :created_by_id, inverse_of: :creator
+
   # Soft delete functionality
   scope :active, -> { where(disabled_at: nil) }
   scope :disabled, -> { where.not(disabled_at: nil) }

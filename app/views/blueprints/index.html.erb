@@ -1,8 +1,14 @@
 <div class="space-y-8">
-  <h1>Regras de prova</h1>
-  <p>Gerencie as regras de prova de acordo com os seus editais.</p>
+  <div class="space-y-3">
+    <h1 class="text-2xl font-semibold text-foreground">Regras de prova</h1>
+    <p class="text-sm text-muted-foreground">Gerencie os blueprints por modalidade e ano.</p>
+  </div>
+
   <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-    <%= form_with url: questions_blueprints_path, method: :get, local: true, html: { class: "flex w-full flex-col gap-3 md:flex-row md:items-center md:justify-between", data: { controller: "filters", filters_delay_value: 500 } } do |form| %>
+    <%= form_with url: questions_blueprints_path,
+                  method: :get,
+                  local: true,
+                  html: { class: "flex w-full flex-col gap-3 md:flex-row md:items-center", data: { controller: "filters", filters_delay_value: 500 } } do |form| %>
       <div class="relative w-full md:max-w-sm lg:max-w-md">
         <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted-foreground">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
@@ -10,36 +16,77 @@
             <path d="m21 21-3.5-3.5" />
           </svg>
         </span>
-        <%= form.text_field :q, value: @filters[:q], placeholder: "Buscar por título", class: "input pl-9", data: { action: "input->filters#submit" } %>
+        <%= form.text_field :q,
+                            value: @filters[:q],
+                            placeholder: "Buscar por nome ou ano",
+                            class: "input w-full pl-9",
+                            data: { action: "input->filters#submit" } %>
       </div>
     <% end %>
 
     <div class="flex items-center gap-2 md:ml-auto">
-      <%= button_tag "Adicionar regra", class: "btn btn-primary btn-sm", type: :button %>
+      <%= link_to "Adicionar regra", new_questions_blueprint_path, class: "btn btn-primary btn-sm" %>
     </div>
   </div>
 
   <div class="overflow-x-auto">
-    <div class="min-w-full lg:min-w-[720px]">
+    <div class="min-w-full lg:min-w-[840px]">
       <div class="<%= table_container_class %>">
         <table class="w-full border-collapse text-sm text-foreground">
           <thead class="bg-muted/40 text-xs uppercase tracking-wide text-foreground">
             <tr>
               <th scope="col" class="px-6 py-3 text-left font-semibold">ID</th>
-              <th scope="col" class="px-6 py-3 text-left font-semibold">Título</th>
+              <th scope="col" class="px-6 py-3 text-left font-semibold">Ano · Modalidade</th>
+              <th scope="col" class="px-6 py-3 text-left font-semibold">Nome</th>
+              <th scope="col" class="px-6 py-3 text-left font-semibold">Status</th>
+              <th scope="col" class="px-6 py-3 text-left font-semibold">Atualizado em</th>
+              <th scope="col" class="px-6 py-3 text-left font-semibold">Ações</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-border">
             <% if @blueprints.any? %>
               <% @blueprints.each do |blueprint| %>
                 <tr class="transition-colors hover:bg-muted/30">
-                  <td class="px-6 py-4 font-medium"><%= blueprint[:id] %></td>
-                  <td class="px-6 py-4"><%= blueprint[:title] %></td>
+                  <td class="px-6 py-4 font-medium">#<%= blueprint.id %></td>
+                  <td class="px-6 py-4">
+                    <div class="flex flex-col">
+                      <span class="font-medium text-foreground"><%= blueprint.year %> · <%= blueprint_modality_label(blueprint.modality) %></span>
+                      <span class="text-xs text-muted-foreground">Criado por <%= blueprint.creator.full_name %></span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4"><%= blueprint.name %></td>
+                  <td class="px-6 py-4">
+                    <span class="rounded-full px-2 py-1 text-xs font-medium <%= blueprint_status_badge_class(blueprint.status) %>"><%= blueprint_status_label(blueprint.status) %></span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="flex flex-col text-xs text-muted-foreground">
+                      <span>Atualizado: <%= l blueprint.updated_at, format: :short %></span>
+                      <% if blueprint.published_at.present? %>
+                        <span>Publicado: <%= l blueprint.published_at, format: :short %></span>
+                      <% end %>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                      <%= link_to "Revisar", edit_questions_blueprint_path(blueprint), class: "btn btn-secondary btn-xs" %>
+                      <% if blueprint.status_draft? %>
+                        <%= button_to "Publicar",
+                                      publish_questions_blueprint_path(blueprint),
+                                      method: :post,
+                                      class: "btn btn-primary btn-xs",
+                                      data: { turbo_confirm: "Publicar este blueprint?" } %>
+                      <% else %>
+                        <%= link_to "Ver snapshot",
+                                    edit_questions_blueprint_path(blueprint, current_step: 4),
+                                    class: "btn btn-ghost btn-xs" %>
+                      <% end %>
+                    </div>
+                  </td>
                 </tr>
               <% end %>
             <% else %>
               <tr>
-                <td colspan="2" class="px-6 py-10 text-center text-sm text-muted-foreground">
+                <td colspan="6" class="px-6 py-10 text-center text-sm text-muted-foreground">
                   Nenhuma regra encontrada.
                 </td>
               </tr>
@@ -50,7 +97,7 @@
 
       <% pagination_params = pagination_base_params(@filters) %>
       <div class="mt-4 flex flex-col gap-3 rounded-lg border border-border bg-card px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-        <span class="text-sm text-muted-foreground">Página <%= @page %> de <%= @total_pages %></span>
+        <span class="text-sm text-muted-foreground">Página <%= @page %> de <%= @total_pages %> · <%= pluralize(@total_count, 'registro') %></span>
         <div class="flex items-center gap-2">
           <%= pagination_button(path_helper: method(:questions_blueprints_path), params: pagination_params, page: 1, icon: "icons/chevrons-left-icon.svg", label: "Primeira página", disabled: @page <= 1) %>
           <%= pagination_button(path_helper: method(:questions_blueprints_path), params: pagination_params, page: (@page - 1).clamp(1, @total_pages), icon: "icons/chevron-left-icon.svg", label: "Página anterior", disabled: @page <= 1) %>
@@ -61,14 +108,3 @@
     </div>
   </div>
 </div>
-
-<style>
-  
-  .space-y-8 h1 {
-    color: #172a3a;
-    font-size: 2rem;
-    font-weight: 700;
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-  }
-</style>

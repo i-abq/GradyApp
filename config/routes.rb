@@ -40,8 +40,11 @@ Rails.application.routes.draw do
     # Rota para a página de booklets
     get 'booklets', to: 'booklets#index'
 
-    # Rota para a página de blueprints de prova
-    get 'questions/blueprints', to: 'blueprints#index', as: :questions_blueprints
+    scope :questions, as: :questions do
+      resources :blueprints, except: [:destroy, :show] do
+        post :publish, on: :member
+      end
+    end
     
     # Rota para a página de layouts
     get 'layouts', to: 'layouts#index'

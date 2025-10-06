@@ -10,9 +10,97 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_02_010726) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_06_011752) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "blueprint_areas", force: :cascade do |t|
+    t.bigint "exam_blueprint_id", null: false
+    t.string "area", null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["exam_blueprint_id", "position"], name: "index_blueprint_areas_on_exam_blueprint_id_and_position", unique: true
+    t.index ["exam_blueprint_id"], name: "index_blueprint_areas_on_exam_blueprint_id"
+  end
+
+  create_table "blueprint_components", force: :cascade do |t|
+    t.bigint "blueprint_area_id", null: false
+    t.string "slug"
+    t.string "title", null: false
+    t.string "component_type", null: false
+    t.integer "num_items", default: 0, null: false
+    t.decimal "maximum_score", precision: 6, scale: 2, default: "0.0", null: false
+    t.jsonb "json_rules", default: {}, null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blueprint_area_id", "position"], name: "index_blueprint_components_on_area_and_position", unique: true
+    t.index ["blueprint_area_id"], name: "index_blueprint_components_on_blueprint_area_id"
+  end
+
+  create_table "blueprint_rules", force: :cascade do |t|
+    t.bigint "blueprint_id", null: false
+    t.string "area", null: false
+    t.string "component", null: false
+    t.integer "quantity", default: 0, null: false
+    t.decimal "max_points", precision: 8, scale: 4, default: "0.0", null: false
+    t.string "rounding_mode", default: "nearest", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blueprint_id", "area", "component"], name: "index_blueprint_rules_on_blueprint_area_component", unique: true
+    t.index ["blueprint_id", "area"], name: "index_blueprint_rules_on_blueprint_id_and_area"
+    t.index ["blueprint_id", "component"], name: "index_blueprint_rules_on_blueprint_id_and_component"
+    t.index ["blueprint_id"], name: "index_blueprint_rules_on_blueprint_id"
+  end
+
+  create_table "blueprint_snapshots", force: :cascade do |t|
+    t.bigint "blueprint_id", null: false
+    t.jsonb "payload", default: {}, null: false
+    t.string "checksum", null: false
+    t.bigint "created_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blueprint_id"], name: "index_blueprint_snapshots_on_blueprint_id"
+    t.index ["checksum"], name: "index_blueprint_snapshots_on_checksum", unique: true
+    t.index ["created_at"], name: "index_blueprint_snapshots_on_created_at"
+    t.index ["created_by_id"], name: "index_blueprint_snapshots_on_created_by_id"
+  end
+
+  create_table "blueprints", force: :cascade do |t|
+    t.integer "year", null: false
+    t.string "modality", default: "p2", null: false
+    t.string "name", null: false
+    t.string "status", default: "draft", null: false
+    t.text "observations"
+    t.integer "target_questions_per_area", default: 100, null: false
+    t.decimal "target_points_per_area", precision: 8, scale: 2, default: "10.0", null: false
+    t.datetime "published_at"
+    t.string "version", default: "1.0.0", null: false
+    t.bigint "created_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_blueprints_on_created_by_id"
+    t.index ["status"], name: "index_blueprints_on_status"
+    t.index ["year", "modality"], name: "index_blueprints_on_year_and_modality"
+  end
+
+  create_table "exam_blueprints", force: :cascade do |t|
+    t.string "modality", null: false
+    t.integer "year", null: false
+    t.integer "version", default: 1, null: false
+    t.string "status", default: "draft", null: false
+    t.string "title", null: false
+    t.text "notes"
+    t.string "checksum"
+    t.bigint "created_by_id", null: false
+    t.datetime "published_on"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_exam_blueprints_on_created_by_id"
+    t.index ["modality", "year", "version"], name: "index_exam_blueprints_on_modality_year_version", unique: true
+    t.index ["modality", "year"], name: "index_exam_blueprints_unique_published", unique: true, where: "((status)::text = 'published'::text)"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -29,4 +117,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_02_010726) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "blueprint_areas", "exam_blueprints"
+  add_foreign_key "blueprint_components", "blueprint_areas"
+  add_foreign_key "blueprint_rules", "blueprints"
+  add_foreign_key "blueprint_snapshots", "blueprints"
+  add_foreign_key "blueprint_snapshots", "users", column: "created_by_id"
+  add_foreign_key "blueprints", "users", column: "created_by_id"
+  add_foreign_key "exam_blueprints", "users", column: "created_by_id"
 end
