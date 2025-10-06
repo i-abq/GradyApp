@@ -1,6 +1,11 @@
 <div class="space-y-8">
   <div class="space-y-3">
-    <h1 class="text-2xl font-semibold text-foreground">Regras de prova</h1>
+    <div class="flex items-center gap-3">
+      <%= link_to questions_path, class: "inline-flex items-center justify-center rounded-md border border-border bg-card p-2 text-muted-foreground transition-colors hover:border-primary hover:text-primary" do %>
+        <%= image_tag "icons/chevron-left-icon.svg", alt: "Voltar", class: "h-4 w-4" %>
+      <% end %>
+      <h1 class="text-2xl font-semibold text-foreground">Regras de prova</h1>
+    </div>
     <p class="text-sm text-muted-foreground">Gerencie os blueprints por modalidade e ano.</p>
   </div>
 
