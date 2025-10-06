@@ -75,7 +75,6 @@ class Blueprint < ApplicationRecord
   validates :target_points_per_area, presence: true, numericality: { greater_than: 0 }
 
   before_validation :ensure_defaults
-  after_initialize :ensure_default_rules, if: :new_record?
 
   scope :ordered, -> { order(created_at: :desc) }
 
@@ -187,7 +186,7 @@ class Blueprint < ApplicationRecord
     transaction do
       update!(status: :published, published_at: Time.current)
       payload = snapshot_payload
-      snapshots.create!(payload:, checksum: Digest::SHA256.hexdigest(payload.to_json), created_by: publisher)
+      snapshots.create!(payload: payload, checksum: Digest::SHA256.hexdigest(payload.to_json), creator: publisher)
     end
   end
 

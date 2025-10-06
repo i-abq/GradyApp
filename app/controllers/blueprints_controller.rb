@@ -29,10 +29,12 @@ class BlueprintsController < ApplicationController
   end
 
   def create
-    @blueprint = Blueprint.build_with_defaults
+    # Build without defaults to avoid duplicating rules when rules_attributes are posted
+    @blueprint = Blueprint.new
     @blueprint.assign_attributes(blueprint_params)
     @blueprint.creator = current_user
-    @blueprint.ensure_default_rules
+    # If the client didn't send rules, seed defaults
+    @blueprint.ensure_default_rules if blueprint_params[:rules_attributes].blank?
 
     if @blueprint.save
       handle_post_persist_response(@blueprint, :new)

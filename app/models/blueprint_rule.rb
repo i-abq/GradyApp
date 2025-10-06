@@ -12,7 +12,7 @@ class BlueprintRule < ApplicationRecord
   belongs_to :blueprint, inverse_of: :rules
 
   validates :area, presence: true, inclusion: { in: Blueprint.area_keys }
-  validates :component, presence: true, uniqueness: { scope: :blueprint_id }
+  validates :component, presence: true, uniqueness: { scope: [:blueprint_id, :area] }
   validates :quantity, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :max_points, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :rounding_mode, presence: true, inclusion: { in: ROUNDING_MODES.keys }
