@@ -128,7 +128,9 @@
             <%= form.check_box :anchored, class: "checkbox" %>
             <%= render_tooltip do %>
               <% tooltip_trigger do %>
-                <%= form.label :anchored, class: "inline-flex items-center gap-1 text-sm text-foreground cursor-help" do %>
+                <%= form.label :anchored,
+                               class: "inline-flex items-center gap-1 text-sm text-foreground cursor-help",
+                               title: "Itens ancorados permanecem fixos em séries históricas para comparações e calibração." do %>
                   Questão ancorada
                   <span class="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground">?</span>
                 <% end %>
@@ -144,7 +146,9 @@
             <%= form.check_box :voidable, class: "checkbox" %>
             <%= render_tooltip do %>
               <% tooltip_trigger do %>
-                <%= form.label :voidable, class: "inline-flex items-center gap-1 text-sm text-foreground cursor-help" do %>
+                <%= form.label :voidable,
+                               class: "inline-flex items-center gap-1 text-sm text-foreground cursor-help",
+                               title: "Utilize quando houver risco de anulação para destacar a questão em análises e revisões." do %>
                   Marcada como anulável
                   <span class="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground">?</span>
                 <% end %>
