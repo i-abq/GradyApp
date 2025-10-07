@@ -124,13 +124,37 @@
             <%= form.label :author_comment, "Observações internas", class: "text-sm font-medium text-foreground" %>
             <%= form.text_area :author_comment, class: "textarea", rows: 4 %>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
             <%= form.check_box :anchored, class: "checkbox" %>
-            <%= form.label :anchored, "Questão ancorada", class: "text-sm text-foreground" %>
+            <%= render_tooltip do %>
+              <% tooltip_trigger do %>
+                <%= form.label :anchored, class: "inline-flex items-center gap-1 text-sm text-foreground cursor-help" do %>
+                  Questão ancorada
+                  <span class="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground">?</span>
+                <% end %>
+              <% end %>
+              <% tooltip_content class: "max-w-xs text-sm" do %>
+                <p class="text-sm text-foreground">
+                  Itens ancorados são usados para manter séries históricas e devem estar presentes nos cadernos comparáveis. Marque quando a questão fizer parte de um conjunto de calibração.
+                </p>
+              <% end %>
+            <% end %>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
             <%= form.check_box :voidable, class: "checkbox" %>
-            <%= form.label :voidable, "Marcada como anulável", class: "text-sm text-foreground" %>
+            <%= render_tooltip do %>
+              <% tooltip_trigger do %>
+                <%= form.label :voidable, class: "inline-flex items-center gap-1 text-sm text-foreground cursor-help" do %>
+                  Marcada como anulável
+                  <span class="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground">?</span>
+                <% end %>
+              <% end %>
+              <% tooltip_content class: "max-w-xs text-sm" do %>
+                <p class="text-sm text-foreground">
+                  Utilize esta marcação para itens com risco de anulação. O status será exibido em revisões e relatórios para facilitar o monitoramento antes da publicação.
+                </p>
+              <% end %>
+            <% end %>
           </div>
         </div>
       </section>

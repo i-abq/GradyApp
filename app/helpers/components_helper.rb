@@ -1,6 +1,7 @@
 require "tailwind_merge"
 
 module ComponentsHelper
+  include Components::TooltipHelper
   def tw(*classes)
     TailwindMerge::Merger.new.merge(classes.compact.join(" "))
   end
