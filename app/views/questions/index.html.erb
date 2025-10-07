@@ -41,6 +41,15 @@
                     counts: @theme_counts,
                     all_label: "Todos"
                   ) %>
+              <%= multi_filter_dropdown(
+                    form,
+                    param: :status,
+                    label: "Status",
+                    options: @status_options,
+                    selected_values: @filters[:status],
+                    counts: @status_counts,
+                    all_label: "Todos"
+                  ) %>
               <%= link_to questions_path, class: "btn btn-ghost btn-sm gap-2" do %>
                 Limpar filtros
                 <%= image_tag "icons/x-icon.svg", alt: "", class: "h-3 w-3" %>
@@ -49,7 +58,7 @@
           </div>
           <div class="flex items-center gap-2 md:ml-auto">
             <%= link_to "Configurar Prova", questions_blueprints_path, class: "btn btn-secondary btn-sm" %>
-            <%= button_tag "Adicionar questão", class: "btn btn-primary btn-sm", type: :button %>
+            <%= link_to "Adicionar questão", new_question_path, class: "btn btn-primary btn-sm" %>
           </div>
         </div>
       <% end %>
@@ -62,24 +71,51 @@
         <table class="w-full border-collapse text-sm text-foreground">
           <thead class="bg-muted/40 text-xs uppercase tracking-wide text-foreground">
             <tr>
-              <th scope="col" class="px-6 py-3 text-left font-semibold">ID</th>
-              <th scope="col" class="px-6 py-3 text-left font-semibold">Título</th>
-              <th scope="col" class="px-6 py-3 text-left font-semibold">Dificuldade</th>
-              <th scope="col" class="px-6 py-3 text-left font-semibold">Área</th>
-              <th scope="col" class="px-6 py-3 text-left font-semibold">Tema</th>
+              <th scope="col" class="px-6 py-3 text-left font-semibold">Item</th>
+              <th scope="col" class="px-6 py-3 text-left font-semibold">Resumo</th>
+              <th scope="col" class="px-6 py-3 text-left font-semibold">Metadados</th>
+              <th scope="col" class="px-6 py-3 text-left font-semibold">Status</th>
+              <th scope="col" class="px-6 py-3 text-left font-semibold">Ações</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-border">
             <% if @questions.any? %>
               <% @questions.each do |question| %>
                 <tr class="transition-colors hover:bg-muted/30">
-                  <td class="px-6 py-4 font-medium"><%= question[:id] %></td>
-                  <td class="px-6 py-4"><%= question[:title] %></td>
-                  <td class="px-6 py-4">
-                    <span class="<%= difficulty_badge_class(question[:difficulty]) %>"><%= difficulty_label(question[:difficulty]) %></span>
+                  <td class="px-6 py-4 text-xs font-medium text-muted-foreground">
+                    <span class="block text-sm font-semibold text-foreground">#<%= question.id %></span>
+                    <span class="block">UUID: <%= question.item_id %></span>
+                    <span class="block">Tipo: <%= question.question_type_label %></span>
                   </td>
-                  <td class="px-6 py-4"><%= question[:area] %></td>
-                  <td class="px-6 py-4"><%= question[:theme] %></td>
+                  <td class="px-6 py-4">
+                    <p class="text-sm text-foreground"><%= truncate(question.statement, length: 130) %></p>
+                    <div class="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                      <span><strong>Área:</strong> <%= question_area_label(question) %></span>
+                      <span><strong>Tema:</strong> <%= question_theme_label(question) %></span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-xs text-muted-foreground">
+                    <% if question.difficulty.present? %>
+                      <span class="<%= difficulty_badge_class(question.difficulty) %>"><%= difficulty_label(question.difficulty) %></span>
+                    <% end %>
+                    <div class="mt-2 space-y-1">
+                      <% if question.year_of_application.present? %>
+                        <p>Ano: <strong><%= question.year_of_application %></strong></p>
+                      <% end %>
+                      <% if question.level.present? %>
+                        <p>Nível: <strong><%= question.level.titleize %></strong></p>
+                      <% end %>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <%= question_status_badge(question) %>
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                      <%= link_to "Editar", edit_question_path(question), class: "btn btn-secondary btn-xs" %>
+                      <%= link_to "Abrir revisão", edit_question_path(question, current_step: 4), class: "btn btn-ghost btn-xs" %>
+                    </div>
+                  </td>
                 </tr>
               <% end %>
             <% else %>

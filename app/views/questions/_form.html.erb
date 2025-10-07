@@ -1,0 +1,378 @@
+<% question ||= @question %>
+<% url ||= question.persisted? ? question_path(question) : questions_path %>
+<% http_method ||= question.persisted? ? :patch : :post %>
+<% current_step ||= @current_step.to_i > 0 ? @current_step.to_i : 1 %>
+<% area_options ||= @area_options %>
+<% theme_options ||= @theme_options %>
+<% difficulty_options ||= @difficulty_options %>
+<% level_options ||= @level_options %>
+<% status_options ||= @status_options %>
+<% themes_payload = Blueprint::AREAS.transform_values { |config| config[:components].map { |key, component| { value: key, label: component[:label] } } } %>
+
+<%= form_with model: question,
+              url: url,
+              method: http_method,
+              data: {
+                controller: "wizard question-form",
+                "wizard-current-value": current_step,
+                "question-form-themes-value": themes_payload.to_json
+              },
+              class: "space-y-6 question-wizard" do |form| %>
+  <%= hidden_field_tag :current_step, current_step, data: { wizard_target: "currentStepField" } %>
+
+  <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-2xl font-semibold text-foreground"><%= question.persisted? ? "Editar questão" : "Adicionar questão" %></h1>
+      <p class="text-sm text-muted-foreground">Cadastre itens objetivos ou abertos com todos os metadados necessários.</p>
+    </div>
+    <%= link_to "Voltar", questions_path, class: "btn btn-ghost btn-sm" %>
+  </div>
+
+  <% if question.errors.any? %>
+    <div class="rounded-md border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
+      <p class="font-semibold">Não foi possível salvar a questão.</p>
+      <ul class="mt-2 list-disc space-y-1 pl-5">
+        <% question.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="rounded-lg border border-border bg-card shadow-sm">
+    <div class="border-b border-border bg-muted/40 p-4">
+      <% steps = [
+           { label: "Identificação", description: "Tipo e metadados" },
+           { label: "Enunciado", description: "Conteúdo da questão" },
+           { label: "Respostas", description: "Alternativas ou rubrica" },
+           { label: "Revisão", description: "Validação final" }
+         ] %>
+      <nav class="grid gap-2 text-sm font-medium sm:grid-cols-4">
+        <% steps.each_with_index do |step, index| %>
+          <button type="button"
+                  class="flex flex-col rounded-md border border-transparent bg-muted px-4 py-3 text-left transition-colors hover:border-slate-300 hover:bg-slate-200"
+                  data-wizard-target="indicator"
+                  data-wizard-step-value="<%= index + 1 %>"
+                  data-action="wizard#go">
+            <span class="text-xs uppercase text-muted-foreground"><%= "Etapa #{index + 1}" %></span>
+            <span class="font-semibold text-foreground"><%= step[:label] %></span>
+            <span class="text-xs text-muted-foreground"><%= step[:description] %></span>
+          </button>
+        <% end %>
+      </nav>
+    </div>
+
+    <div class="space-y-10 p-6">
+      <section class="space-y-6" data-wizard-target="step">
+        <header class="space-y-1">
+          <h2 class="text-xl font-semibold text-foreground">Tipo e metadados</h2>
+          <p class="text-sm text-muted-foreground">Selecione o tipo de questão e preencha os dados necessários para catalogação.</p>
+        </header>
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="space-y-2">
+            <%= form.label :question_type, "Tipo de questão", class: "text-sm font-medium text-foreground" %>
+            <%= form.select :question_type,
+                             Question::QUESTION_TYPES.map { |value, label| [label, value] },
+                             {},
+                             class: "select",
+                             data: { action: "question-form#changeType", question_form_target: "questionType" } %>
+          </div>
+          <div class="space-y-2">
+            <%= form.label :area, "Área", class: "text-sm font-medium text-foreground" %>
+            <%= form.select :area,
+                             area_options,
+                             {},
+                             class: "select",
+                             data: { action: "question-form#changeArea", question_form_target: "area" } %>
+          </div>
+          <div class="space-y-2">
+            <%= form.label :theme, "Tema", class: "text-sm font-medium text-foreground" %>
+            <%= form.select :theme,
+                             theme_options,
+                             {},
+                             class: "select",
+                             data: { question_form_target: "theme" } %>
+          </div>
+          <div class="space-y-2">
+            <%= form.label :year_of_application, "Ano de aplicação", class: "text-sm font-medium text-foreground" %>
+            <%= form.number_field :year_of_application, class: "input", min: 1990, step: 1 %>
+          </div>
+          <div class="space-y-2">
+            <%= form.label :difficulty, "Dificuldade", class: "text-sm font-medium text-foreground" %>
+            <%= form.select :difficulty, difficulty_options, { include_blank: "Selecione" }, class: "select" %>
+          </div>
+          <div class="space-y-2">
+            <%= form.label :level, "Nível", class: "text-sm font-medium text-foreground" %>
+            <%= form.select :level, level_options, { include_blank: "Selecione" }, class: "select" %>
+          </div>
+          <div class="space-y-2 md:col-span-2">
+            <%= form.label :tags_text, "Tags (separe por vírgula)", class: "text-sm font-medium text-foreground" %>
+            <%= text_field_tag :tags_text,
+                               Array(question.tags).join(", "),
+                               class: "input",
+                               data: { question_form_target: "tagsInput" } %>
+          </div>
+          <div class="space-y-2">
+            <%= form.label :usage_rights, "Direitos de uso", class: "text-sm font-medium text-foreground" %>
+            <%= form.text_field :usage_rights, class: "input" %>
+          </div>
+          <div class="space-y-2">
+            <%= form.label :source, "Fonte / Referência", class: "text-sm font-medium text-foreground" %>
+            <%= form.text_field :source, class: "input" %>
+          </div>
+          <div class="space-y-2 md:col-span-2">
+            <%= form.label :author_comment, "Observações internas", class: "text-sm font-medium text-foreground" %>
+            <%= form.text_area :author_comment, class: "textarea", rows: 4 %>
+          </div>
+          <div class="flex items-center gap-3">
+            <%= form.check_box :anchored, class: "checkbox" %>
+            <%= form.label :anchored, "Questão ancorada", class: "text-sm text-foreground" %>
+          </div>
+          <div class="flex items-center gap-3">
+            <%= form.check_box :voidable, class: "checkbox" %>
+            <%= form.label :voidable, "Marcada como anulável", class: "text-sm text-foreground" %>
+          </div>
+        </div>
+      </section>
+
+      <section class="space-y-6 hidden" data-wizard-target="step">
+        <header class="space-y-1">
+          <h2 class="text-xl font-semibold text-foreground">Enunciado</h2>
+          <p class="text-sm text-muted-foreground">Elabore o enunciado da questão. Você pode utilizar formatação avançada.</p>
+        </header>
+        <div class="space-y-2">
+          <%= form.label :statement, "Enunciado", class: "text-sm font-medium text-foreground" %>
+          <%= form.text_area :statement, class: "textarea min-h-[200px]", rows: 10 %>
+          <p class="text-xs text-muted-foreground">Inclua referências e descreva imagens com texto alternativo quando necessário.</p>
+        </div>
+      </section>
+
+      <section class="space-y-6 hidden" data-wizard-target="step">
+        <header class="space-y-1">
+          <h2 class="text-xl font-semibold text-foreground">Respostas</h2>
+          <p class="text-sm text-muted-foreground">Configure as alternativas ou a rubrica de avaliação.</p>
+        </header>
+
+        <div data-question-form-target="mcqSection" class="space-y-6">
+          <div class="rounded-lg border border-border">
+            <div class="flex items-center justify-between border-b border-border bg-muted/40 px-4 py-3">
+              <div>
+                <h3 class="text-lg font-semibold text-foreground">Alternativas objetivas</h3>
+                <p class="text-xs text-muted-foreground">Defina as cinco alternativas (A–E), marcando exatamente uma como correta.</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <%= form.check_box :shuffle_alternatives, class: "checkbox" %>
+                <%= form.label :shuffle_alternatives, "Permitir embaralhamento", class: "text-sm text-foreground" %>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[720px] table-fixed border-collapse text-sm text-foreground">
+                <thead class="bg-muted/40 text-xs uppercase tracking-wide text-foreground">
+                  <tr>
+                    <th scope="col" class="px-4 py-3 text-left font-semibold">Letra</th>
+                    <th scope="col" class="px-4 py-3 text-left font-semibold">Texto</th>
+                    <th scope="col" class="w-32 px-4 py-3 text-left font-semibold">Correta</th>
+                    <th scope="col" class="px-4 py-3 text-left font-semibold">Justificativa do distrator</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-border">
+                  <% Question::LETTERS.each_with_index do |letter, index| %>
+                    <% alternative = question.alternatives.detect { |alt| alt.letter == letter } || question.alternatives.build(letter:, position: index) %>
+                    <%= form.fields_for :alternatives, alternative do |alt_fields| %>
+                      <tr class="align-top">
+                        <td class="px-4 py-3 font-semibold">
+                          <%= alt_fields.hidden_field :letter, value: letter %>
+                          <%= alt_fields.hidden_field :position, value: index %>
+                          <%= letter %>
+                        </td>
+                        <td class="px-4 py-3">
+                          <%= alt_fields.text_area :text, class: "textarea min-h-[120px]", rows: 4 %>
+                        </td>
+                        <td class="px-4 py-3">
+                          <label class="inline-flex items-center gap-2">
+                            <%= alt_fields.check_box :correct, class: "checkbox", data: { action: "question-form#markCorrect", question_form_target: "correctToggle" } %>
+                            <span class="text-xs text-muted-foreground">Correta</span>
+                          </label>
+                        </td>
+                        <td class="px-4 py-3">
+                          <%= alt_fields.text_area :distractor_justification, class: "textarea min-h-[120px]", rows: 4 %>
+                        </td>
+                      </tr>
+                    <% end %>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="text-sm font-semibold text-foreground">Mapa OMR</h3>
+            <p class="text-xs text-muted-foreground">Associe cada alternativa à bolha correspondente na folha de respostas.</p>
+            <div class="grid gap-3 sm:grid-cols-5">
+              <% Question::LETTERS.each_with_index do |letter, index| %>
+                <div class="space-y-1">
+                  <%= label_tag "question_omr_letter_map_#{letter}", "#{letter}", class: "text-xs font-medium text-muted-foreground" %>
+                  <%= number_field_tag "question[omr_letter_map][#{letter}]",
+                                       (question.omr_letter_map || {})[letter] || (index + 1).to_s,
+                                       class: "input",
+                                       min: 1,
+                                       data: { question_form_target: "omrField" } %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <div data-question-form-target="openSection" class="space-y-6 hidden">
+          <div class="space-y-2">
+            <%= form.label :maximum_score, "Pontuação máxima", class: "text-sm font-medium text-foreground" %>
+            <%= form.number_field :maximum_score, class: "input", step: 0.25, min: 0 %>
+            <p class="text-xs text-muted-foreground">O valor final será calculado aplicando o percentual obtido sobre esta pontuação.</p>
+          </div>
+
+          <div class="rounded-lg border border-border">
+            <div class="border-b border-border bg-muted/40 px-4 py-3">
+              <h3 class="text-lg font-semibold text-foreground">Rubrica (5 níveis)</h3>
+              <p class="text-xs text-muted-foreground">Preencha os critérios e exemplos de evidências para cada nível (A–E).</p>
+            </div>
+            <div class="space-y-0 divide-y divide-border">
+              <% Question::LETTERS.each_with_index do |letter, index| %>
+                <% rubric_level = question.rubric_levels.detect { |level| level.letter == letter } || question.rubric_levels.build(letter:, level_index: index + 1, percentage: Question::OPEN_PERCENTAGES[index]) %>
+                <%= form.fields_for :rubric_levels, rubric_level do |rubric_fields| %>
+                  <div class="grid gap-3 p-4 sm:grid-cols-6">
+                    <div class="sm:col-span-1">
+                      <p class="text-sm font-semibold text-foreground">Nível <%= letter %></p>
+                      <p class="text-xs text-muted-foreground"><%= Question::OPEN_PERCENTAGES[index] %>%</p>
+                      <%= rubric_fields.hidden_field :letter, value: letter %>
+                      <%= rubric_fields.hidden_field :level_index, value: index + 1 %>
+                      <%= rubric_fields.hidden_field :percentage, value: Question::OPEN_PERCENTAGES[index] %>
+                    </div>
+                    <div class="sm:col-span-3 space-y-1">
+                      <%= rubric_fields.label :criteria, "Critérios", class: "text-xs font-medium text-muted-foreground" %>
+                      <%= rubric_fields.text_area :criteria, class: "textarea min-h-[120px]", rows: 4 %>
+                    </div>
+                    <div class="sm:col-span-2 space-y-1">
+                      <%= rubric_fields.label :examples_evidence, "Exemplos/Evidências", class: "text-xs font-medium text-muted-foreground" %>
+                      <%= rubric_fields.text_area :examples_evidence, class: "textarea min-h-[120px]", rows: 4 %>
+                    </div>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="text-sm font-semibold text-foreground">Mapa OMR</h3>
+            <p class="text-xs text-muted-foreground">Mapa padrão (1–5) para leitura óptica.</p>
+            <div class="grid gap-3 sm:grid-cols-5">
+              <% Question::LETTERS.each_with_index do |letter, index| %>
+                <div class="space-y-1">
+                  <%= label_tag "question_omr_letter_map_#{letter}", "#{letter}", class: "text-xs font-medium text-muted-foreground" %>
+                  <%= number_field_tag "question[omr_letter_map][#{letter}]",
+                                       (question.omr_letter_map || {})[letter] || (index + 1).to_s,
+                                       class: "input",
+                                       min: 1 %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="space-y-6 hidden" data-wizard-target="step">
+        <header class="space-y-1">
+          <h2 class="text-xl font-semibold text-foreground">Revisão final</h2>
+          <p class="text-sm text-muted-foreground">Verifique se todas as informações estão completas antes de salvar ou enviar para revisão.</p>
+        </header>
+        <div class="grid gap-4 md:grid-cols-2">
+          <div class="rounded-lg border border-border bg-muted/30 p-4">
+            <h3 class="text-base font-semibold text-foreground">Visão geral</h3>
+            <dl class="mt-3 space-y-2 text-sm">
+              <div class="flex items-center justify-between">
+                <dt class="text-muted-foreground">Tipo</dt>
+                <dd class="font-medium"><%= question.question_type_label %></dd>
+              </div>
+              <div class="flex items-center justify-between">
+                <dt class="text-muted-foreground">Área</dt>
+                <dd class="font-medium"><%= question_area_label(question) %></dd>
+              </div>
+              <div class="flex items-center justify-between">
+                <dt class="text-muted-foreground">Tema</dt>
+                <dd class="font-medium"><%= question_theme_label(question) %></dd>
+              </div>
+              <div class="flex items-center justify-between">
+                <dt class="text-muted-foreground">Dificuldade</dt>
+                <dd class="font-medium"><%= difficulty_label(question.difficulty) if question.difficulty.present? %></dd>
+              </div>
+              <div class="flex items-center justify-between">
+                <dt class="text-muted-foreground">Status</dt>
+                <dd><%= question_status_badge(question) %></dd>
+              </div>
+            </dl>
+          </div>
+          <div class="rounded-lg border border-border bg-muted/30 p-4">
+            <h3 class="text-base font-semibold text-foreground">Resumo de respostas</h3>
+            <% if question.mcq? %>
+              <p class="text-sm text-muted-foreground">Resposta oficial: <strong><%= question.official_answer || "—" %></strong></p>
+              <ul class="mt-3 space-y-2 text-xs">
+                <% question.alternatives.each do |alternative| %>
+                  <li class="rounded-md border border-border bg-background p-2">
+                    <span class="font-semibold"><%= alternative.letter %></span>
+                    <span class="text-muted-foreground"> - <%= truncate(alternative.text, length: 80) %></span>
+                    <% if alternative.correct? %>
+                      <span class="ml-2 rounded-md bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700">Correta</span>
+                    <% end %>
+                  </li>
+                <% end %>
+              </ul>
+            <% else %>
+              <p class="text-sm text-muted-foreground">Pontuação máxima: <strong><%= question.maximum_score %></strong></p>
+              <ul class="mt-3 space-y-2 text-xs">
+                <% question.rubric_levels.each do |level| %>
+                  <li class="rounded-md border border-border bg-background p-2">
+                    <span class="font-semibold">Nível <%= level.letter %> (<%= level.percentage %>%)</span>
+                    <p class="text-muted-foreground"><%= truncate(level.criteria, length: 80) %></p>
+                  </li>
+                <% end %>
+              </ul>
+            <% end %>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="flex flex-col gap-3 border-t border-border bg-muted/30 p-4 sm:flex-row sm:items-center sm:justify-between">
+      <button type="button" class="btn btn-ghost btn-sm" data-wizard-target="previousButton" data-action="wizard#previous">Voltar etapa</button>
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-2">
+        <button type="button" class="btn btn-secondary btn-sm" data-wizard-target="nextButton" data-action="wizard#next">Próxima etapa</button>
+        <div class="flex items-center gap-2 hidden" data-wizard-target="finalActions">
+          <%= button_tag "Salvar rascunho", class: "btn btn-secondary btn-sm", type: :submit, name: :commit, value: "draft" %>
+          <%= button_tag "Enviar para revisão", class: "btn btn-primary btn-sm", type: :submit, name: :commit, value: "review" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<style>
+  .question-wizard [data-wizard-target="indicator"][data-state="active"] span {
+    color: #ffffff !important;
+  }
+
+  .question-wizard [data-wizard-target="indicator"]:not([data-state="active"]):hover {
+    background-color: #e5e7eb;
+    border-color: #9ca3af;
+    color: #1f2937;
+  }
+
+  .question-wizard [data-wizard-target="indicator"]:not([data-state="active"]):hover span {
+    color: #1f2937 !important;
+  }
+
+  .question-wizard .btn:hover,
+  .question-wizard .btn:focus-visible {
+    background-color: #e5e7eb !important;
+    border-color: #9ca3af !important;
+    color: #1f2937 !important;
+  }
+</style>

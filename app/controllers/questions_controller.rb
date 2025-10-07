@@ -1,123 +1,220 @@
+# frozen_string_literal: true
+
 class QuestionsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_question, only: [:edit, :update, :submit_review]
+  before_action :prepare_collections, only: [:index, :new, :edit]
 
-  SAMPLE_QUESTIONS = [
-    { id: 1023, title: "Composição de funções lineares", difficulty: "easy", area: "Matemática", theme: "Funções" },
-    { id: 1048, title: "Leis de Newton aplicadas ao movimento circular", difficulty: "medium", area: "Física", theme: "Dinâmica" },
-    { id: 1120, title: "Interpretação de charges com foco em argumentos implícitos", difficulty: "hard", area: "Linguagens", theme: "Compreensão textual" },
-    { id: 1185, title: "Estrutura de DNA e síntese proteica", difficulty: "medium", area: "Biologia", theme: "Genética" },
-    { id: 1254, title: "Análise de gráficos de calor urbano", difficulty: "easy", area: "Geografia", theme: "Climatologia" },
-    { id: 1331, title: "Processos de formação do Império Romano", difficulty: "hard", area: "História", theme: "Antiguidade" }
-  ].freeze
+  PER_PAGE = 25
 
   def index
     @filters = {
       q: params[:q].to_s.strip,
-      difficulty: Array(params[:difficulty]).flatten.map(&:presence).compact,
-      area: Array(params[:area]).flatten.map(&:presence).compact,
-      theme: Array(params[:theme]).flatten.map(&:presence).compact
+      difficulty: Array(params[:difficulty]).reject(&:blank?),
+      area: Array(params[:area]).reject(&:blank?),
+      theme: Array(params[:theme]).reject(&:blank?),
+      status: Array(params[:status]).reject(&:blank?)
     }
 
-    filtered_questions = filter_questions
+    scope = apply_filters(Question.includes(:author).ordered)
 
-    @per_page = 25
+    @total_count = scope.count
+    @total_pages = [(@total_count / PER_PAGE.to_f).ceil, 1].max
     @page = params[:page].to_i
     @page = 1 if @page < 1
-    @total_pages = [(filtered_questions.size / @per_page.to_f).ceil, 1].max
     @page = @total_pages if @page > @total_pages
-    offset = (@page - 1) * @per_page
-    @questions = filtered_questions.slice(offset, @per_page) || []
-    @difficulty_options = difficulty_options
-    @area_options = area_options
-    @theme_options = theme_options
-    @difficulty_counts = difficulty_counts
-    @area_counts = area_counts
-    @theme_counts = theme_counts
+
+    @questions = scope.offset((@page - 1) * PER_PAGE).limit(PER_PAGE)
+  end
+
+  def new
+    @question = build_question
+  end
+
+  def create
+    @question = current_user.authored_questions.build(question_params)
+    assign_nested_defaults(@question)
+
+    if @question.save
+      handle_post_save(@question)
+    else
+      prepare_collections
+      @current_step = params[:current_step].presence || 1
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  def edit
+    @current_step = params[:current_step].presence || 1
+    assign_nested_defaults(@question)
+  end
+
+  def update
+    assign_nested_defaults(@question)
+
+    if @question.update(question_params)
+      handle_post_save(@question)
+    else
+      prepare_collections
+      @current_step = params[:current_step].presence || 1
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def submit_review
+    if @question.update(status: :review)
+      redirect_to questions_path, notice: "Questão enviada para revisão."
+    else
+      prepare_collections
+      flash.now[:alert] = "Não foi possível enviar para revisão."
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   private
 
-  def filter_questions
-    query = @filters[:q].presence
-    selected_difficulties = Array(@filters[:difficulty])
-    selected_areas = Array(@filters[:area])
-    selected_themes = Array(@filters[:theme])
+  def set_question
+    @question = Question.includes(:alternatives, :rubric_levels).find(params[:id])
+  end
 
-    SAMPLE_QUESTIONS.select do |question|
-      matches_query = query.nil? || question[:title].downcase.include?(query.downcase)
-      matches_difficulty = selected_difficulties.blank? || selected_difficulties.include?(question[:difficulty])
-      matches_area = selected_areas.blank? || selected_areas.include?(question[:area])
-      matches_theme = selected_themes.blank? || selected_themes.include?(question[:theme])
-
-      matches_query && matches_difficulty && matches_area && matches_theme
+  def build_question
+    Question.new(question_type: params[:question_type].presence || "mcq5_unica").tap do |question|
+      question.omr_letter_map = nil
+      assign_nested_defaults(question)
+      default_area = Blueprint.area_keys.first
+      question.area ||= default_area
+      question.theme ||= Blueprint.components_for_area(default_area).keys.first
     end
   end
 
-  def difficulty_options
-    QuestionsHelper::DIFFICULTY_LABELS.map { |value, label| [label, value] }
-  end
-
-  def area_options
-    SAMPLE_QUESTIONS.map { |question| question[:area] }.uniq.sort.map { |area| [area, area] }
-  end
-
-  def theme_options
-    SAMPLE_QUESTIONS.map { |question| question[:theme] }.uniq.sort.map { |theme| [theme, theme] }
-  end
-
-  def difficulty_counts
-    query = @filters[:q].presence&.downcase
-    areas = Array(@filters[:area])
-    themes = Array(@filters[:theme])
-
-    counts = SAMPLE_QUESTIONS.each_with_object(Hash.new(0)) do |question, acc|
-      next if query.present? && !question[:title].downcase.include?(query)
-      next if areas.present? && !areas.include?(question[:area])
-      next if themes.present? && !themes.include?(question[:theme])
-
-      acc[question[:difficulty]] += 1
-    end
-
-    QuestionsHelper::DIFFICULTY_LABELS.keys.each_with_object({}) do |difficulty, acc|
-      acc[difficulty] = counts[difficulty] || 0
+  def assign_nested_defaults(question)
+    if question.mcq?
+      ensure_mcq_defaults(question)
+    else
+      ensure_open_defaults(question)
     end
   end
 
-  def area_counts
-    query = @filters[:q].presence&.downcase
-    difficulties = Array(@filters[:difficulty])
-    themes = Array(@filters[:theme])
-
-    counts = SAMPLE_QUESTIONS.each_with_object(Hash.new(0)) do |question, acc|
-      next if query.present? && !question[:title].downcase.include?(query)
-      next if difficulties.present? && !difficulties.include?(question[:difficulty])
-      next if themes.present? && !themes.include?(question[:theme])
-
-      acc[question[:area]] += 1
+  def ensure_mcq_defaults(question)
+    missing_letters = Question::LETTERS - question.alternatives.map(&:letter)
+    missing_letters.each_with_index do |letter, index|
+      question.alternatives.build(letter:, position: index, text: "", correct: false)
     end
 
-    area_values = area_options.map { |_, value| value }
-    area_values.each_with_object({}) do |area, acc|
-      acc[area] = counts[area] || 0
+    question.alternatives.each do |alternative|
+      alternative.position = Question::LETTERS.index(alternative.letter)
     end
   end
 
-  def theme_counts
-    query = @filters[:q].presence&.downcase
-    difficulties = Array(@filters[:difficulty])
-    areas = Array(@filters[:area])
+  def ensure_open_defaults(question)
+    question.alternatives.each { |alt| alt.mark_for_destruction }
+    question.percent_mapping = question.send(:default_percent_mapping) if question.percent_mapping.blank?
 
-    counts = SAMPLE_QUESTIONS.each_with_object(Hash.new(0)) do |question, acc|
-      next if query.present? && !question[:title].downcase.include?(query)
-      next if difficulties.present? && !difficulties.include?(question[:difficulty])
-      next if areas.present? && !areas.include?(question[:area])
-
-      acc[question[:theme]] += 1
+    existing_letters = question.rubric_levels.map(&:letter)
+    (Question::LETTERS - existing_letters).each_with_index do |letter, index|
+      percentage = Question::OPEN_PERCENTAGES[index]
+      question.rubric_levels.build(
+        letter:,
+        level_index: index + 1,
+        percentage:,
+        criteria: "",
+        examples_evidence: ""
+      )
     end
 
-    theme_values = theme_options.map { |_, value| value }
-    theme_values.each_with_object({}) do |theme, acc|
-      acc[theme] = counts[theme] || 0
+    question.maximum_score ||= 1.0
+  end
+
+  def question_params
+    permitted = params.require(:question).permit(
+      :question_type,
+      :area,
+      :theme,
+      :year_of_application,
+      :difficulty,
+      :level,
+      :source,
+      :usage_rights,
+      :author_comment,
+      :statement,
+      :shuffle_alternatives,
+      :maximum_score,
+      :voidable,
+      :anchored,
+      :anchor_set_id,
+      :tags_text,
+      tags: [],
+      omr_letter_map: {},
+      percent_mapping: {},
+      alternatives_attributes: [:id, :letter, :text, :correct, :distractor_justification, :position, :_destroy],
+      rubric_levels_attributes: [:id, :letter, :level_index, :percentage, :criteria, :examples_evidence, :_destroy]
+    )
+
+    tags_text = permitted.delete(:tags_text)
+    if tags_text.present?
+      permitted[:tags] = tags_text.split(',').map(&:strip).reject(&:blank?)
+    elsif !permitted.key?(:tags)
+      permitted[:tags] = []
     end
+
+    if permitted[:omr_letter_map].respond_to?(:to_unsafe_h)
+      permitted[:omr_letter_map] = permitted[:omr_letter_map].to_unsafe_h
+    elsif permitted[:omr_letter_map].respond_to?(:to_h)
+      permitted[:omr_letter_map] = permitted[:omr_letter_map].to_h
+    end
+
+    if permitted[:percent_mapping].respond_to?(:to_unsafe_h)
+      permitted[:percent_mapping] = permitted[:percent_mapping].to_unsafe_h
+    elsif permitted[:percent_mapping].respond_to?(:to_h)
+      permitted[:percent_mapping] = permitted[:percent_mapping].to_h
+    end
+
+    permitted
+  end
+
+  def apply_filters(scope)
+    filtered = scope
+    filtered = filtered.where("LOWER(statement) LIKE :query", query: "%#{@filters[:q].downcase}%") if @filters[:q].present?
+    filtered = filtered.where(difficulty: @filters[:difficulty]) if @filters[:difficulty].present?
+    filtered = filtered.where(area: @filters[:area]) if @filters[:area].present?
+    filtered = filtered.where(theme: @filters[:theme]) if @filters[:theme].present?
+    filtered = filtered.where(status: @filters[:status]) if @filters[:status].present?
+    filtered
+  end
+
+  def handle_post_save(question)
+    case params[:commit]
+    when "review"
+      question.update(status: :review)
+      redirect_to questions_path, notice: "Questão enviada para revisão."
+    else
+      question.update(status: :draft)
+      redirect_to edit_question_path(question), notice: "Questão salva como rascunho."
+    end
+  end
+
+  def prepare_collections
+    @area_options = Blueprint::AREAS.map { |key, config| [config[:label], key] }
+    if action_name == "index"
+      @theme_options = Blueprint::AREAS.flat_map do |area_key, config|
+        config[:components].map do |component_key, component|
+          ["#{config[:label]} · #{component[:label]}", component_key]
+        end
+      end
+    else
+      selected_area = params.dig(:question, :area) || @question&.area || @area_options.first&.last
+      @theme_options = Blueprint.components_for_area(selected_area).map { |key, component| [component[:label], key] }
+    end
+    @difficulty_options = Question::DIFFICULTIES.map { |value| [QuestionsHelper::DIFFICULTY_LABELS[value], value] }
+    @level_options = Question::LEVELS.map { |value| [value.titleize, value] }
+    @status_options = Question::STATUSES.map { |value, label| [label, value] }
+
+    return unless action_name == "index"
+
+    base_scope = Question.all
+    @difficulty_counts = Question::DIFFICULTIES.index_with { |value| base_scope.where(difficulty: value).count }
+    @area_counts = base_scope.group(:area).count.transform_keys(&:to_s)
+    @theme_counts = base_scope.group(:theme).count.transform_keys(&:to_s)
+    @status_counts = base_scope.group(:status).count.transform_keys(&:to_s)
   end
 end

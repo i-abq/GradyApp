@@ -28,6 +28,13 @@ module QuestionsHelper
     "hard" => "Difícil"
   }.freeze
 
+  STATUS_BADGE_CLASSES = {
+    "draft" => "bg-amber-100 text-amber-800",
+    "review" => "bg-blue-100 text-blue-800",
+    "approved" => "bg-emerald-100 text-emerald-700",
+    "retired" => "bg-slate-100 text-slate-600"
+  }.freeze
+
   def difficulty_label(value)
     DIFFICULTY_LABELS.fetch(value, value.to_s.titleize)
   end
@@ -42,6 +49,20 @@ module QuestionsHelper
     }
 
     tw(base, palette.fetch(value, "border-muted bg-muted/40 text-muted-foreground"))
+  end
+
+  def question_status_badge(question)
+    content_tag :span,
+                question.status_label,
+                class: tw("rounded-full px-2 py-0.5 text-xs font-medium", STATUS_BADGE_CLASSES.fetch(question.status, "bg-muted text-muted-foreground"))
+  end
+
+  def question_area_label(question)
+    Blueprint::AREAS.dig(question.area, :label) || question.area.to_s.humanize
+  end
+
+  def question_theme_label(question)
+    Blueprint::AREAS.dig(question.area, :components, question.theme, :label) || question.theme.to_s.humanize
   end
 
 

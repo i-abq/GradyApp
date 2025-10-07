@@ -34,8 +34,9 @@ Rails.application.routes.draw do
     # Rota para o perfil do usuário
     get 'profile', to: 'profile#index'
     
-    # Rota para a página de perguntas
-    get 'questions', to: 'questions#index'
+    resources :questions, only: [:index, :new, :create, :edit, :update] do
+      post :submit_review, on: :member
+    end
 
     # Rota para a página de booklets
     get 'booklets', to: 'booklets#index'

@@ -6,6 +6,9 @@ class User < ApplicationRecord
  
   has_many :authored_blueprints, class_name: "Blueprint", foreign_key: :created_by_id, inverse_of: :creator
   has_many :blueprint_snapshots, class_name: "BlueprintSnapshot", foreign_key: :created_by_id, inverse_of: :creator
+  has_many :authored_questions, class_name: "Question", foreign_key: :author_id, inverse_of: :author
+  has_many :reviewed_questions, class_name: "Question", foreign_key: :reviewer_id, inverse_of: :reviewer
+  has_many :approved_questions, class_name: "Question", foreign_key: :approver_id, inverse_of: :approver
 
   # Soft delete functionality
   scope :active, -> { where(disabled_at: nil) }
