@@ -10,7 +10,6 @@ class QuestionsController < ApplicationController
   def index
     @filters = {
       q: params[:q].to_s.strip,
-      difficulty: Array(params[:difficulty]).reject(&:blank?),
       area: Array(params[:area]).reject(&:blank?),
       theme: Array(params[:theme]).reject(&:blank?),
       status: Array(params[:status]).reject(&:blank?)
@@ -192,7 +191,6 @@ class QuestionsController < ApplicationController
   def apply_filters(scope)
     filtered = scope
     filtered = filtered.where("LOWER(statement) LIKE :query", query: "%#{@filters[:q].downcase}%") if @filters[:q].present?
-    filtered = filtered.where(difficulty: @filters[:difficulty]) if @filters[:difficulty].present?
     filtered = filtered.where(area: @filters[:area]) if @filters[:area].present?
     filtered = filtered.where(theme: @filters[:theme]) if @filters[:theme].present?
     filtered = filtered.where(status: @filters[:status]) if @filters[:status].present?
@@ -229,7 +227,6 @@ class QuestionsController < ApplicationController
     return unless action_name == "index"
 
     base_scope = Question.all
-    @difficulty_counts = Question::DIFFICULTIES.index_with { |value| base_scope.where(difficulty: value).count }
     @area_counts = base_scope.group(:area).count.transform_keys(&:to_s)
     @theme_counts = base_scope.group(:theme).count.transform_keys(&:to_s)
     @status_counts = base_scope.group(:status).count.transform_keys(&:to_s)
