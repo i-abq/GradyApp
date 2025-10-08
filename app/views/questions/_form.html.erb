@@ -375,7 +375,11 @@
         <button type="button" class="btn btn-secondary btn-sm" data-wizard-target="nextButton" data-action="wizard#next">Próxima etapa</button>
         <div class="flex items-center gap-2 hidden" data-wizard-target="finalActions">
           <%= button_tag "Salvar rascunho", class: "btn btn-secondary btn-sm", type: :submit, name: :commit, value: "draft" %>
-          <%= button_tag "Enviar para revisão", class: "btn btn-primary btn-sm", type: :submit, name: :commit, value: "review" %>
+          <% if question.status_review? %>
+            <%= button_to "Aprovar", approve_question_path(question), method: :post, class: "btn btn-primary btn-sm" %>
+          <% else %>
+            <%= button_tag "Enviar para revisão", class: "btn btn-primary btn-sm", type: :submit, name: :commit, value: "review" %>
+          <% end %>
         </div>
       </div>
     </div>

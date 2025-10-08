@@ -2,7 +2,7 @@
 
 class QuestionsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_question, only: [:edit, :update, :submit_review]
+  before_action :set_question, only: [:edit, :update, :submit_review, :approve]
   before_action :prepare_collections, only: [:index, :new, :edit]
 
   PER_PAGE = 25
@@ -67,6 +67,23 @@ class QuestionsController < ApplicationController
     else
       prepare_collections
       flash.now[:alert] = "Não foi possível enviar para revisão."
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def approve
+    unless @question.status_review?
+      redirect_to edit_question_path(@question, current_step: 4), alert: "A aprovação requer que a questão esteja em revisão." and return
+    end
+
+    # Re-validate the item before approval
+    if @question.valid?
+      @question.update!(status: :approved, approver: current_user, approved_on: Time.current)
+      redirect_to questions_path, notice: "Questão aprovada."
+    else
+      prepare_collections
+      @current_step = 4
+      flash.now[:alert] = "Corrija os erros antes de aprovar."
       render :edit, status: :unprocessable_entity
     end
   end

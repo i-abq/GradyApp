@@ -114,6 +114,9 @@
                     <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
                       <%= link_to "Editar", edit_question_path(question), class: "btn btn-secondary btn-xs" %>
                       <%= link_to "Abrir revisão", edit_question_path(question, current_step: 4), class: "btn btn-ghost btn-xs" %>
+                      <% if question.status_review? %>
+                        <%= button_to "Aprovar", approve_question_path(question), method: :post, class: "btn btn-primary btn-xs", data: { turbo_confirm: "Aprovar esta questão?" } %>
+                      <% end %>
                     </div>
                   </td>
                 </tr>

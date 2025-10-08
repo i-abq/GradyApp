@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     
     resources :questions, only: [:index, :new, :create, :edit, :update] do
       post :submit_review, on: :member
+      post :approve, on: :member
     end
 
     # Rota para a página de booklets
