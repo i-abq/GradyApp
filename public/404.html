@@ -26,7 +26,7 @@
     }
 
     .error-code {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 0.9rem;
       font-weight: 500;
       color: #A0AEC0; /* Cinza claro, similar ao da imagem */
@@ -38,7 +38,7 @@
     }
 
     h1 {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 2.8rem; /* Ajustado para ser impactante */
       font-weight: 700;
       color: #172a3a; /* Cor escura do tema para títulos */
@@ -54,7 +54,7 @@
     }
 
     .actions a {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       text-decoration: none;
       padding: 12px 24px;
       border-radius: 8px;
@@ -113,9 +113,43 @@
     <h1>Oops! Parece que essa página não existe.</h1>
     <p>Não conseguimos encontrar a página que você está procurando. Ela pode ter sido movida ou não existe mais.</p>
     <div class="actions">
-      <a href="https://grady.com.br" class="btn-primary">Voltar para a página inicial</a>
+      <a href="#" id="homeLink" class="btn-primary">Voltar para a página inicial</a>
       <a href="mailto:support@grady.com.br" class="btn-secondary">Contate o Suporte</a>
     </div>
   </div>
+
+  <script>
+    // Function to check if user is logged in
+    function isUserLoggedIn() {
+      // Check for authentication token in localStorage
+      const authToken = localStorage.getItem('authToken') || localStorage.getItem('auth_token');
+      if (authToken) return true;
+
+      // Check for session cookie
+      const sessionCookie = document.cookie.split(';').find(cookie => 
+        cookie.trim().startsWith('_session_id=') || 
+        cookie.trim().startsWith('user_session=') ||
+        cookie.trim().startsWith('grady_session=')
+      );
+      if (sessionCookie) return true;
+
+      // Check for JWT token in sessionStorage
+      const jwtToken = sessionStorage.getItem('jwt') || sessionStorage.getItem('token');
+      if (jwtToken) return true;
+
+      return false;
+    }
+
+    // Set the appropriate home link based on login status
+    document.addEventListener('DOMContentLoaded', function() {
+      const homeLink = document.getElementById('homeLink');
+      
+      if (isUserLoggedIn()) {
+        homeLink.href = 'https://app.grady.com.br/';
+      } else {
+        homeLink.href = 'https://www.grady.com.br';
+      }
+    });
+  </script>
 </body>
 </html>
