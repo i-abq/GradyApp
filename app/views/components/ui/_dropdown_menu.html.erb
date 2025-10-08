@@ -3,7 +3,7 @@
     <%= content_for(:dropdown_menu_trigger) %>
   </div>
 
-  <div class="hidden absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md focus:outline-none"
+  <div class="hidden fixed z-50 mt-2 w-48 origin-top-right rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md focus:outline-none"
        data-dropdown-menu-target="menu"
        data-action="click->dropdown-menu#select">
     <% if content_for?(:dropdown_menu_label) %>

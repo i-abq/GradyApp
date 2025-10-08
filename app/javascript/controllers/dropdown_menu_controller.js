@@ -13,14 +13,17 @@ export default class extends Controller {
     event.stopPropagation()
 
     if (this.menuTarget.classList.contains("hidden")) {
-      this.show()
+      this.show(event)
     } else {
       this.hide()
     }
   }
 
-  show() {
+  show(event) {
+    const triggerRect = this.triggerTarget.getBoundingClientRect()
     this.menuTarget.classList.remove("hidden")
+    this.menuTarget.style.top = `${triggerRect.bottom + window.scrollY}px`
+    this.menuTarget.style.left = `${triggerRect.right - this.menuTarget.offsetWidth + window.scrollX}px`
     document.addEventListener("click", this.hide)
     document.addEventListener("keyup", this.handleKeyup)
   }
