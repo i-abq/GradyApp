@@ -1,11 +1,16 @@
-<%= render_popover do %>
-  <%= popover_trigger do %>
+<div class="relative inline-flex" data-controller="dropdown-menu">
+  <div data-action="click->dropdown-menu#toggle" data-dropdown-menu-target="trigger">
     <%= content_for(:dropdown_menu_trigger) %>
-  <% end %>
-  <%= popover_content class: "p-1 w-48" do %>
+  </div>
+
+  <div class="hidden absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md focus:outline-none"
+       data-dropdown-menu-target="menu"
+       data-action="click->dropdown-menu#select">
     <% if content_for?(:dropdown_menu_label) %>
-      <div class="px-2 py-1.5 text-sm font-semibold"><%= content_for(:dropdown_menu_label) %></div>
+      <div class="px-2 py-1.5 text-sm font-semibold text-muted-foreground"><%= content_for(:dropdown_menu_label) %></div>
     <% end %>
-    <%= content_for(:dropdown_menu_content) %>
-  <% end %>
-<% end %>
+    <div class="flex flex-col gap-1">
+      <%= content_for(:dropdown_menu_content) %>
+    </div>
+  </div>
+</div>

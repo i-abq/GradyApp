@@ -2,7 +2,6 @@ require "tailwind_merge"
 
 module ComponentsHelper
   include Components::TooltipHelper
-  include Components::PopoverHelper
   include Components::DropdownMenuHelper
   def tw(*classes)
     TailwindMerge::Merger.new.merge(classes.compact.join(" "))
