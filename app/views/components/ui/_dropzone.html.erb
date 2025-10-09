@@ -1,0 +1,23 @@
+<div class="w-full">
+  <div class="p-6">
+    <div
+      data-controller="dropzone"
+      data-action="dragover->dropzone#preventDefaults dragenter->dropzone#highlight dragleave->dropzone#unhighlight drop->dropzone#dropHandler click->dropzone#trigger"
+      class="flex w-full flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/50 bg-muted/40 p-6 text-center transition-colors">
+      <div class="flex flex-col items-center gap-3">
+        <div data-dropzone-target="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-10 w-10 text-muted-foreground">
+            <path d="M15.5 2H8.6c-.4 0-.8.2-1.1.5-.3.3-.5.7-.5 1.1v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8c.4 0 .8-.2 1.1-.5.3-.3.5-.7.5-1.1V6.5L15.5 2z"></path>
+            <path d="M3 7.6v12.8c0 .4.2.8.5 1.1.3.3.7.5 1.1.5h9.8"></path>
+            <path d="M15 2v5h5"></path>
+          </svg>
+        </div>
+        <div class="space-y-1">
+          <p class="text-sm font-semibold text-foreground">Arraste o CSV aqui ou clique para selecionar</p>
+          <p class="text-xs text-muted-foreground" data-dropzone-target="message">Apenas arquivos .csv (UTF-8). Tamanho máximo sugerido: 2MB.</p>
+        </div>
+      </div>
+      <input type="file" name="file" accept=".csv" hidden data-dropzone-target="fileInput" data-action="change->dropzone#changed">
+    </div>
+  </div>
+</div>

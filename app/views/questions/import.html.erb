@@ -21,8 +21,7 @@
     <%= form_with url: import_questions_path, method: :post, local: true, html: { class: "space-y-4", multipart: true } do |form| %>
       <div class="space-y-2">
         <%= form.label :file, "Arquivo CSV", class: "text-sm font-medium text-foreground" %>
-        <%= form.file_field :file, accept: ".csv", class: "file-input" %>
-        <p class="text-xs text-muted-foreground">Tamanho máximo recomendado: 2MB. Certifique-se de salvar o arquivo com codificação UTF-8.</p>
+        <%= render "components/ui/dropzone" %>
       </div>
 
       <div class="flex items-center gap-3">
