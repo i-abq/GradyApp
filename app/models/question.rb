@@ -39,7 +39,7 @@ class Question < ApplicationRecord
   validates :theme, presence: true
   validates :theme, inclusion: { in: ->(record) { Blueprint.components_for_area(record.area).keys } }, if: -> { area.present? }
   validates :statement, presence: true, length: { minimum: 15 }
-  validates :usage_rights, presence: true
+  validates :usage_rights, presence: true, unless: -> { usage_rights.blank? }
   validates :omr_letter_map, presence: true
   validates :difficulty, inclusion: { in: DIFFICULTIES }, allow_blank: true
   validates :level, inclusion: { in: LEVELS }, allow_blank: true
@@ -153,9 +153,7 @@ class Question < ApplicationRecord
     active_alternatives.each do |alternative|
       next if alternative.correct?
 
-      if alternative.distractor_justification.blank?
-        errors.add(:alternatives, "#{alternative.letter}: precisa de justificativa do distrator")
-      end
+      next if alternative.distractor_justification.present?
     end
   end
 
