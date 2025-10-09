@@ -3,7 +3,7 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_question, only: [:edit, :update, :submit_review, :approve]
-  before_action :prepare_collections, only: [:index, :new, :edit]
+  before_action :prepare_collections, only: [:index, :new, :edit, :import]
 
   PER_PAGE = 25
 
@@ -28,6 +28,12 @@ class QuestionsController < ApplicationController
 
   def new
     @question = build_question
+  end
+
+  def import_template
+    send_data QuestionCsvImporter.sample_csv,
+              filename: "modelo_importacao_questoes.csv",
+              type: "text/csv"
   end
 
   def create
@@ -57,6 +63,28 @@ class QuestionsController < ApplicationController
       prepare_collections
       @current_step = params[:current_step].presence || 1
       render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def import
+    return unless request.post?
+
+    if params[:file].blank?
+      flash.now[:alert] = "Selecione um arquivo CSV."
+      render :import, status: :unprocessable_entity
+      return
+    end
+
+    importer = QuestionCsvImporter.new(file: params[:file], author: current_user)
+    result = importer.call
+
+    if result.failed_rows.empty?
+      redirect_to questions_path, notice: "#{result.created_count} questões importadas com sucesso."
+    else
+      @created_count = result.created_count
+      @failed_rows = result.failed_rows
+      flash.now[:alert] = "Algumas linhas não foram importadas."
+      render :import, status: :unprocessable_entity
     end
   end
 

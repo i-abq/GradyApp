@@ -1,0 +1,69 @@
+<div class="space-y-6">
+  <div class="flex items-center gap-3">
+    <%= link_to questions_path, class: "btn btn-ghost btn-sm" do %>
+      <%= image_tag "icons/chevron-left-icon.svg", alt: "", class: "h-4 w-4" %>
+      Voltar
+    <% end %>
+    <h1 class="text-2xl font-semibold text-foreground">Importar questões via CSV</h1>
+  </div>
+
+  <div class="rounded-lg border border-border bg-card p-6 shadow-sm space-y-5">
+    <div class="space-y-2">
+      <h2 class="text-lg font-semibold text-foreground">Passos para importar</h2>
+      <ol class="list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
+        <li>Baixe o modelo de CSV para garantir que os cabeçalhos estejam corretos.</li>
+        <li>Preencha cada linha com uma questão. Tipos suportados: <code>mcq5_unica</code> e <code>open5_percent</code>.</li>
+        <li>Envie o arquivo. Questões válidas serão criadas como <strong>rascunho</strong>; linhas inválidas aparecerão em um relatório de erros.</li>
+      </ol>
+      <%= link_to "Baixar modelo CSV", import_template_questions_path, class: "btn btn-ghost btn-sm gap-2" %>
+    </div>
+
+    <%= form_with url: import_questions_path, method: :post, local: true, html: { class: "space-y-4", multipart: true } do |form| %>
+      <div class="space-y-2">
+        <%= form.label :file, "Arquivo CSV", class: "text-sm font-medium text-foreground" %>
+        <%= form.file_field :file, accept: ".csv", class: "file-input" %>
+        <p class="text-xs text-muted-foreground">Tamanho máximo recomendado: 2MB. Certifique-se de salvar o arquivo com codificação UTF-8.</p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <%= form.submit "Importar", class: "btn btn-primary" %>
+        <%= link_to "Cancelar", questions_path, class: "btn btn-ghost" %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if defined?(@failed_rows) && @failed_rows.present? %>
+    <div class="rounded-lg border border-amber-400 bg-amber-50 p-6">
+      <h2 class="text-lg font-semibold text-amber-800">Linhas com erros</h2>
+      <% if defined?(@created_count) && @created_count.to_i.positive? %>
+        <p class="mt-1 text-sm text-amber-800"><%= @created_count %> questões foram importadas com sucesso. Ajuste as linhas abaixo e reenvie para completar a importação.</p>
+      <% else %>
+        <p class="mt-1 text-sm text-amber-800">As linhas abaixo não foram importadas. Ajuste os dados e tente novamente.</p>
+      <% end %>
+      <div class="mt-4 overflow-x-auto">
+        <table class="min-w-full border-collapse text-sm">
+          <thead class="bg-amber-100 text-amber-900">
+            <tr>
+              <th class="px-4 py-2 text-left font-semibold">Linha</th>
+              <th class="px-4 py-2 text-left font-semibold">Erros</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-amber-200">
+            <% @failed_rows.each do |failure| %>
+              <tr>
+                <td class="px-4 py-2 font-medium"><%= failure[:row_number] %></td>
+                <td class="px-4 py-2">
+                  <ul class="list-disc pl-4 space-y-1">
+                    <% failure[:errors].each do |error| %>
+                      <li><%= error %></li>
+                    <% end %>
+                  </ul>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% end %>
+</div>
