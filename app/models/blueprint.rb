@@ -4,6 +4,8 @@ require "digest"
 require "bigdecimal"
 
 class Blueprint < ApplicationRecord
+  SNAPSHOT_SCHEMA_VERSION = "blueprint/v1"
+
   DEFAULT_TARGET_QUESTIONS = 100
   DEFAULT_TARGET_POINTS = BigDecimal("10.0")
 
@@ -188,14 +190,15 @@ class Blueprint < ApplicationRecord
       payload = snapshot_payload
       snapshots.create!(payload: payload, checksum: Digest::SHA256.hexdigest(payload.to_json), creator: publisher)
     end
+  rescue ActiveRecord::RecordNotUnique
+    raise PublicationError, ["Já existe um blueprint publicado para #{year} #{modality.upcase}"]
   end
 
-  def snapshot_payload
-    grouped_rules = rules
-      .sort_by { |rule| [rule.area, rule.component] }
-      .group_by(&:area)
+  def snapshot_payload(precision: 4)
+    allocation_snapshot = build_allocation_snapshot(precision:)
 
     {
+      schema_version: SNAPSHOT_SCHEMA_VERSION,
       blueprint: {
         id: id,
         year: year,
@@ -208,28 +211,83 @@ class Blueprint < ApplicationRecord
         questions_per_area: target_questions_per_area,
         points_per_area: target_points_per_area.to_f
       },
-      areas: grouped_rules.transform_values do |area_rules|
-        area_rules.map do |rule|
-          {
-            component: rule.component,
-            quantity: rule.quantity,
-            max_points: rule.max_points.to_f,
-            points_per_unit: rule.points_per_unit.to_f,
-            rounding_mode: rule.rounding_mode
-          }
-        end
-      end,
-      totals: area_totals.transform_values do |totals|
-        totals.merge(
-          total_points: totals[:total_points].to_f,
-          delta_points: totals[:delta_points].to_f
-        )
-      end
+      allocation: allocation_snapshot.transform_values { |data| data[:rules] },
+      area_totals: allocation_snapshot.transform_values { |data| data[:totals] },
+      scoring: scoring_snapshot,
+      restrictions: restrictions_snapshot
     }
   end
 
   def latest_snapshot
     snapshots.order(created_at: :desc).first
+  end
+
+  def build_allocation_snapshot(precision: 4)
+    grouped_rules = rules
+      .sort_by { |rule| [rule.area, rule.component] }
+      .group_by(&:area)
+
+    totals_reference = area_totals
+
+    grouped_rules.each_with_object({}) do |(area_key, area_rules), acc|
+      rules_snapshot = area_rules.map do |rule|
+        quantity = rule.quantity.to_i
+        exact_total = BigDecimal(rule.max_points.to_s)
+        exact_per_unit = quantity.zero? ? BigDecimal("0") : exact_total / quantity
+        rounded_per_unit = quantity.zero? ? exact_per_unit : exact_per_unit.round(precision)
+        rounded_total = rounded_per_unit * quantity
+
+        {
+          component: rule.component,
+          label: component_label(area_key, rule.component),
+          quantity: quantity,
+          max_points: exact_total.to_f,
+          points_per_unit: exact_per_unit.to_f,
+          rounded_points_per_unit: rounded_per_unit.to_f,
+          rounding_total_difference: (rounded_total - exact_total).to_f,
+          rounding_mode: rule.rounding_mode
+        }
+      end
+
+      total_exact_points = area_rules.sum { |rule| BigDecimal(rule.max_points.to_s) }
+      total_rounded_points = rules_snapshot.sum do |entry|
+        BigDecimal(entry[:rounded_points_per_unit].to_s) * entry[:quantity]
+      end
+
+      totals_data = totals_reference.fetch(area_key)
+
+      totals_snapshot = {
+        area: area_key,
+        label: totals_data[:label],
+        total_quantity: totals_data[:total_quantity],
+        target_questions: target_questions_per_area,
+        total_points: totals_data[:total_points].to_f,
+        target_points: BigDecimal(target_points_per_area.to_s).to_f,
+        delta_quantity: totals_data[:delta_quantity],
+        delta_points: totals_data[:delta_points].to_f,
+        valid_quantity: totals_data[:valid_quantity],
+        valid_points: totals_data[:valid_points],
+        rounded_points: total_rounded_points.to_f,
+        rounding_delta: (total_rounded_points - total_exact_points).to_f,
+        rounding_precision: precision
+      }
+
+      acc[area_key] = {
+        rules: rules_snapshot,
+        totals: totals_snapshot
+      }
+    end
+  end
+
+  def scoring_snapshot
+    {
+      modality: modality,
+      policies: {}
+    }
+  end
+
+  def restrictions_snapshot
+    []
   end
 
   class PublicationError < StandardError

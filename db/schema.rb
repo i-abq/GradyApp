@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_07_005804) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_19_231622) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -84,6 +84,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_07_005804) do
     t.index ["created_by_id"], name: "index_blueprints_on_created_by_id"
     t.index ["status"], name: "index_blueprints_on_status"
     t.index ["year", "modality"], name: "index_blueprints_on_year_and_modality"
+    t.index ["year", "modality"], name: "index_blueprints_on_year_modality_published", unique: true, where: "((status)::text = 'published'::text)"
   end
 
   create_table "exam_blueprints", force: :cascade do |t|

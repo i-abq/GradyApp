@@ -3,25 +3,6 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["fileInput", "message", "icon"]
 
-  connect() {
-    this.preventDefaults = this.preventDefaults.bind(this)
-    this.highlight = this.highlight.bind(this)
-    this.unhighlight = this.unhighlight.bind(this)
-    this.dropHandler = this.dropHandler.bind(this)
-
-    this.element.addEventListener("dragover", this.preventDefaults, false)
-    this.element.addEventListener("dragenter", this.highlight, false)
-    this.element.addEventListener("dragleave", this.unhighlight, false)
-    this.element.addEventListener("drop", this.dropHandler, false)
-  }
-
-  disconnect() {
-    this.element.removeEventListener("dragover", this.preventDefaults, false)
-    this.element.removeEventListener("dragenter", this.highlight, false)
-    this.element.removeEventListener("dragleave", this.unhighlight, false)
-    this.element.removeEventListener("drop", this.dropHandler, false)
-  }
-
   preventDefaults(event) {
     event.preventDefault()
     event.stopPropagation()
