@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_10_19_231622) do
+ActiveRecord::Schema[7.1].define(version: 2025_10_20_000034) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -40,6 +40,21 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_19_231622) do
     t.index ["blueprint_area_id"], name: "index_blueprint_components_on_blueprint_area_id"
   end
 
+  create_table "blueprint_restrictions", force: :cascade do |t|
+    t.bigint "blueprint_id", null: false
+    t.string "area"
+    t.string "component"
+    t.jsonb "include_tags"
+    t.jsonb "exclude_tags"
+    t.jsonb "sources"
+    t.jsonb "difficulty_mix"
+    t.integer "reuse_years_block"
+    t.boolean "allow_reuse"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blueprint_id"], name: "index_blueprint_restrictions_on_blueprint_id"
+  end
+
   create_table "blueprint_rules", force: :cascade do |t|
     t.bigint "blueprint_id", null: false
     t.string "area", null: false
@@ -53,6 +68,18 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_19_231622) do
     t.index ["blueprint_id", "area"], name: "index_blueprint_rules_on_blueprint_id_and_area"
     t.index ["blueprint_id", "component"], name: "index_blueprint_rules_on_blueprint_id_and_component"
     t.index ["blueprint_id"], name: "index_blueprint_rules_on_blueprint_id"
+  end
+
+  create_table "blueprint_scoring_policies", force: :cascade do |t|
+    t.bigint "blueprint_id", null: false
+    t.decimal "wrong_penalty"
+    t.string "blank_behavior"
+    t.decimal "blank_points"
+    t.string "normalization"
+    t.jsonb "metadata"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blueprint_id"], name: "index_blueprint_scoring_policies_on_blueprint_id"
   end
 
   create_table "blueprint_snapshots", force: :cascade do |t|
@@ -85,6 +112,21 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_19_231622) do
     t.index ["status"], name: "index_blueprints_on_status"
     t.index ["year", "modality"], name: "index_blueprints_on_year_and_modality"
     t.index ["year", "modality"], name: "index_blueprints_on_year_modality_published", unique: true, where: "((status)::text = 'published'::text)"
+  end
+
+  create_table "booklet_snapshots", force: :cascade do |t|
+    t.bigint "blueprint_id", null: false
+    t.bigint "blueprint_snapshot_id", null: false
+    t.string "area", null: false
+    t.jsonb "payload", default: {}, null: false
+    t.string "checksum", null: false
+    t.bigint "generated_by_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blueprint_id"], name: "index_booklet_snapshots_on_blueprint_id"
+    t.index ["blueprint_snapshot_id"], name: "index_booklet_snapshots_on_blueprint_snapshot_id"
+    t.index ["checksum"], name: "index_booklet_snapshots_on_checksum", unique: true
+    t.index ["generated_by_id"], name: "index_booklet_snapshots_on_generated_by_id"
   end
 
   create_table "exam_blueprints", force: :cascade do |t|
@@ -186,10 +228,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_19_231622) do
 
   add_foreign_key "blueprint_areas", "exam_blueprints"
   add_foreign_key "blueprint_components", "blueprint_areas"
+  add_foreign_key "blueprint_restrictions", "blueprints"
   add_foreign_key "blueprint_rules", "blueprints"
+  add_foreign_key "blueprint_scoring_policies", "blueprints"
   add_foreign_key "blueprint_snapshots", "blueprints"
   add_foreign_key "blueprint_snapshots", "users", column: "created_by_id"
   add_foreign_key "blueprints", "users", column: "created_by_id"
+  add_foreign_key "booklet_snapshots", "blueprint_snapshots"
+  add_foreign_key "booklet_snapshots", "blueprints"
+  add_foreign_key "booklet_snapshots", "users", column: "generated_by_id"
   add_foreign_key "exam_blueprints", "users", column: "created_by_id"
   add_foreign_key "question_alternatives", "questions"
   add_foreign_key "question_rubric_levels", "questions"

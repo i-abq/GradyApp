@@ -63,6 +63,8 @@ class Blueprint < ApplicationRecord
 
   has_many :rules, class_name: "BlueprintRule", dependent: :destroy, inverse_of: :blueprint
   has_many :snapshots, class_name: "BlueprintSnapshot", dependent: :destroy, inverse_of: :blueprint
+  has_one :scoring_policy, class_name: "BlueprintScoringPolicy", dependent: :destroy, inverse_of: :blueprint
+  has_many :restrictions, class_name: "BlueprintRestriction", dependent: :destroy, inverse_of: :blueprint
 
   accepts_nested_attributes_for :rules
 
@@ -280,14 +282,33 @@ class Blueprint < ApplicationRecord
   end
 
   def scoring_snapshot
+    policy = scoring_policy || BlueprintScoringPolicy.new
+
     {
       modality: modality,
-      policies: {}
+      policies: {
+        wrong_penalty: policy.wrong_penalty.to_f,
+        blank_behavior: policy.blank_behavior,
+        blank_points: policy.blank_points&.to_f,
+        normalization: policy.normalization,
+        metadata: policy.metadata
+      }
     }
   end
 
   def restrictions_snapshot
-    []
+    restrictions.order(:area, :component).map do |restriction|
+      {
+        area: restriction.area,
+        component: restriction.component,
+        include_tags: restriction.include_tags_list,
+        exclude_tags: restriction.exclude_tags_list,
+        sources: Array(restriction.sources),
+        difficulty_mix: restriction.difficulty_mix,
+        reuse_years_block: restriction.reuse_years_block,
+        allow_reuse: restriction.allow_reuse
+      }
+    end
   end
 
   class PublicationError < StandardError

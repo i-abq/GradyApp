@@ -44,8 +44,10 @@ Rails.application.routes.draw do
       end
     end
 
-    # Rota para a página de booklets
-    get 'booklets', to: 'booklets#index'
+    # Rotas para booklets
+    resources :booklets, only: [:index] do
+      post :generate, on: :collection
+    end
 
     scope :questions, as: :questions do
       resources :blueprints, except: [:destroy, :show] do
